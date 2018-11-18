@@ -1,4 +1,4 @@
-import { createActions } from 'redux-actions';
+import {createActions} from 'redux-actions';
 
 const ADJUST_HP = 'ADJUST_HP';
 

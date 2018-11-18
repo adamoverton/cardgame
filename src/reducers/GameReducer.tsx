@@ -4,7 +4,7 @@ export interface initialStateType {
   hp: number;
 }
 
-const initialState = {
+export const initialState = {
   hp: 10,
 };
 
