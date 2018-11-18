@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/react-redux": "^6.0.9",
+    "@types/redux-actions": "^2.3.1",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
-    "react-scripts-ts": "3.1.0"
+    "react-redux": "^5.1.0",
+    "react-scripts-ts": "^4.0.8",
+    "redux": "^4.0.1",
+    "redux-actions": "^2.6.4"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -19,5 +24,11 @@
     "@types/react": "^16.4.18",
     "@types/react-dom": "^16.0.9",
     "typescript": "^3.1.6"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

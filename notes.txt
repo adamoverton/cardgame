@@ -1,0 +1,64 @@
+Strike, Defend, Prepared, Dagger Throw,  Shiv, Blade Dance, Dodge and Roll, Poisoned Stab, Bouncing Flask, Inflame, Flex, Flechettes
+
+{
+    name: "Strike",
+    effects: [{
+            type: "damage",
+            amount: 6,
+            description: "Deals __ damage"
+        }
+    ]
+}
+
+self
+all
+random
+targeted {
+    self,
+    targeted,
+    ally, // including self?
+
+}
+
+playerCompendium [
+
+]
+
+enemyCompendium [
+
+]
+
+playerDeck [{
+
+}]
+
+// Buffs and debuffs
+buffInfo: [
+    {
+        name: "BeserkEnergy",
+        timing: start_of_turn
+        // default_target? so far no
+    },
+    {
+        name: "Vulnerable",
+        description: "Vulnerable increases attack damage by 50% for __ turns",
+    }
+]
+
+cards: [
+{
+    name: "Berserk",
+    effects: [
+        {
+            type: Vulnerable,
+            amount: 3,
+            target: self
+            timing: immediate / null,
+        },
+        {
+            type: BeserkEnergy,
+            amount: 1,
+            target: self
+        }
+    ]
+}]
