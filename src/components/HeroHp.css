@@ -11,3 +11,11 @@
     font-size: 40px;
     min-width: 50px;
 }
+
+.buffs {
+    display: flex;
+}
+
+.buff .title {
+    font-weight: bold;
+}

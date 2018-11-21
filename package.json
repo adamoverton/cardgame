@@ -10,7 +10,7 @@
     "react-redux": "^5.1.0",
     "react-scripts-ts": "^4.0.8",
     "redux": "^4.0.1",
-    "redux-actions": "^2.6.4"
+    "unionize": "^2.1.2"
   },
   "scripts": {
     "start": "react-scripts-ts start",

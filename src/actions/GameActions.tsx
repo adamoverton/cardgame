@@ -1,15 +1,12 @@
-import {createActions} from 'redux-actions';
+import {BuffName} from 'src/types/StoreState';
+import {unionize, ofType, UnionOf} from 'unionize';
 
-const ADJUST_HP = 'ADJUST_HP';
+export const Actions = unionize({
+    ADJUST_HP: ofType<{ hp: number }>(),
+    ADD_BUFF: ofType<{ buffName: BuffName, value: number }>(),
+}, {
+    tag: 'type',
+    value: 'payload',
+});
 
-export interface AdjustHpPayload {
-    hp: number;
-}
-
-export type GamePayload = AdjustHpPayload;
-
-export const {
-    adjustHp,
-} = createActions<GamePayload>(
-    ADJUST_HP,
-);
+export type ActionsType = UnionOf<typeof Actions>;
