@@ -3,15 +3,25 @@ import {Actions, ActionsType} from 'src/actions/GameActions';
 
 export const initialState = {
     hero: {
+        id: 'hero',
         hp: 10,
         maxHp: 50,
         buffList: [],
     },
-    enemy: {
-        hp: 10,
-        maxHp: 50,
-        buffList: [],
-    },
+    enemyList: [
+        {
+            id: 'enemy1',
+            hp: 10,
+            maxHp: 50,
+            buffList: [],
+        },
+        {
+            id: 'enemy2',
+            hp: 20,
+            maxHp: 100,
+            buffList: [],
+        }
+    ],
 };
 
 export const reducer = (state: StoreState, action: ActionsType) => Actions.match(action, {

@@ -47,20 +47,21 @@ export interface Buff {
     value: number; // how much and how long, all in one!
 }
 
-export interface Hero {
+export interface Entity {
+    id: string;
     hp: number;
     maxHp: number;
     buffList: Buff[];
+}
+
+export interface Hero extends Entity {
     // relicList: Relic[];
 }
 
-export interface Enemy {
-    hp: number;
-    maxHp: number;
-    buffList: Buff[];
+export interface Enemy extends Entity {
 }
 
 export interface StoreState {
     hero: Hero,
-    enemy: Enemy,
+    enemyList: Enemy[],
 }
