@@ -8,8 +8,12 @@ export function playCard(): ThunkType {
 };
 
 export function startCombat(): ThunkType {
-    return (dispatch, getState) => {
-        dispatch(Actions.ADJUST_HP({targetEntityId: getState().hero.id, hp: -1}));
+    return (dispatch) => {
+        dispatch(Actions.ADD_ENEMY({
+            hp: 10,
+            maxHp: 50,
+            buffList: [],
+        }));
     };
 };
 

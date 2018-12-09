@@ -1,40 +1,37 @@
 import {StoreState} from 'src/types/StoreState';
 import {Actions, ActionsType} from 'src/actions/GameActions';
 
-export const initialState = {
-    hero: {
-        id: 'hero',
-        hp: 10,
-        maxHp: 50,
-        buffList: [],
-    },
-    enemyList: [
-        {
-            id: 'enemy1',
-            hp: 10,
-            maxHp: 50,
-            buffList: [],
-        },
-        {
-            id: 'enemy2',
-            hp: 20,
-            maxHp: 100,
-            buffList: [],
-        }
-    ],
-};
-
 export const reducer = (state: StoreState, action: ActionsType) => Actions.match(action, {
     /**
      * Increment/decrement the hero hp by the given value
      */
-    ADJUST_HP: ({hp}) => ({
-        ...state,
-        hero: {
-            ...state.hero,
-            hp: state.hero.hp + hp,
-        },
-    }),
+    ADJUST_HP: ({targetEntityId, hp}) => {
+        let newState = {
+            ...state,
+        }
+        if (targetEntityId === 'hero') {
+            newState.hero = {
+                ...state.hero,
+                hp: state.hero.hp + hp,
+            };
+        } else {
+            let found = false;
+            const newEnemyList = newState.enemyList.map(enemy => {
+                if (enemy.id === targetEntityId) {
+                    enemy.hp += hp;
+                    found = true;
+                }
+                return enemy;
+            });
+
+            if (!found) {
+                console.warn(`Tried to adjust hp of ${targetEntityId} but could not find corresponding entity`);
+            }
+            newState.enemyList = newEnemyList;
+        }
+
+        return newState;
+    },
     /**
      * Add a hero buff matching the given name with the given value. If the buff already exists, add the given value
      * to the existing buff
@@ -60,6 +57,27 @@ export const reducer = (state: StoreState, action: ActionsType) => Actions.match
         }
         return newState;
     },
+    ADD_ENEMY: (enemy) => ({
+        ...state,
+        enemyList: [
+            ...state.enemyList,
+            {
+                ...enemy,
+                id: 'enemy' + state.enemyIdIncrementer,
+            },
+        ],
+        enemyIdIncrementer: state.enemyIdIncrementer + 1,
+    }),
+    REMOVE_ENEMY: (enemyId) => ({
+        ...state,
+        enemyList: state.enemyList.filter(enemy => enemy.id !== enemyId),
+        enemyIdIncrementer: state.enemyIdIncrementer + 1,
+    }),
+    CLEAR_ENEMIES: () => ({
+        ...state,
+        enemyList: [],
+        enemyIdIncrementer: 0,
+    }),
     /**
      * This default case is necessary for everything to compile. We should never get here.
      */

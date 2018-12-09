@@ -8,7 +8,20 @@
 
 .gameStage {
     height: 500px;
+    display: flex;
     background: #A3A3A3;
+}
+
+.heroList {
+    width: 30%;
+}
+
+.enemyList {
+    width: 30%;
+}
+
+.enemy {
+    margin: 20px 0;
 }
 
 .playCard {

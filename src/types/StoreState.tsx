@@ -64,4 +64,5 @@ export interface Enemy extends Entity {
 export interface StoreState {
     hero: Hero,
     enemyList: Enemy[],
+    enemyIdIncrementer: number,
 }
