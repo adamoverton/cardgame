@@ -25,8 +25,17 @@
 }
 
 .playCard {
+    padding: 20px;
     width: 200px;
     height: 150px;
     background: burlywood;
+    cursor: pointer;
+}
+
+.endTurn {
+    padding: 20px;
+    width: 200px;
+    height: 150px;
+    background: skyblue;
     cursor: pointer;
 }

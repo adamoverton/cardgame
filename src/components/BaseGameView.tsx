@@ -5,6 +5,7 @@ import { Hp } from 'src/containers/Hp';
 
 export interface BaseGameViewProps {
     playCard: () => void;
+    endTurn: () => void;
 }
 
 export class BaseGameView extends PureComponent<BaseGameViewProps> {
@@ -12,6 +13,7 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
     public render(): ReactNode {
         const {
             playCard,
+            endTurn,
         } = this.props;
 
         return (
@@ -23,6 +25,12 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
                     onClick={playCard}
                 >
                     Play Card
+                </div>
+                <div
+                    className="endTurn"
+                    onClick={endTurn}
+                >
+                    End Turn
                 </div>
             </div>
         );
