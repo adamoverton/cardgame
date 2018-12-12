@@ -24,7 +24,7 @@ export const defaultState: StoreState = {
             buffList: [],
         }
     ],
-    enemyIdIncrementer: 0,
+    enemyIdIncrementer: 3,
 };
 
 export const configureStore = (initialState?: StoreState) => {

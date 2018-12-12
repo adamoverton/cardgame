@@ -59,6 +59,7 @@ cards: [
             type: BeserkEnergy,
             amount: 1,
             target: self
+            timing: start_of_turn
         }
     ]
 }]
