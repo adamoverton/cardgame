@@ -1,10 +1,11 @@
 import { ThunkAction } from 'redux-thunk';
-import { BuffName, StoreState, Enemy } from 'src/types/StoreState';
 import { ofType, unionize, UnionOf } from 'unionize';
+import { EffectName } from 'src/GamePlay/Effect';
+import { StoreState, Enemy } from 'src/types/StoreState';
 
 export const Actions = unionize({
     ADJUST_HP: ofType<{ targetEntityId: string, hp: number }>(),
-    ADD_BUFF: ofType<{ buffName: BuffName, value: number }>(),
+    APPLY_EFFECT: ofType<{ effectName: EffectName, magnitude: number }>(),
     CLEAR_ENEMIES: ofType<{}>(),
     ADD_ENEMY: ofType<Partial<Enemy>>(),
     REMOVE_ENEMY: ofType<string>(),

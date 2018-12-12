@@ -36,23 +36,23 @@ export const reducer = (state: StoreState, action: ActionsType) => Actions.match
      * Add a hero buff matching the given name with the given value. If the buff already exists, add the given value
      * to the existing buff
      */
-    ADD_BUFF: ({buffName, value}) => {
+    APPLY_EFFECT: ({effectName, magnitude}) => {
         // TODO: oh my god having to care about not mutating existing state sucks. There's got to be a way where we
         // TODO: don't have to think so much about it in these reducers. Modularizing the state would help, but not fix.
         let newState = {
             ...state,
             hero: {
                 ...state.hero,
-                buffList: [...state.hero.buffList]
+                buffList: [...state.hero.effectList]
             }
         };
-        const existingBuff = newState.hero.buffList.find(buff => buff.name === buffName);
-        if (existingBuff) {
-            existingBuff.value += value;
+        const existingEffectList = newState.hero.effectList.find(effect => effect.name === effectName);
+        if (existingEffectList) {
+            existingEffectList.magnitude += magnitude;
         } else {
             newState.hero.buffList.push({
-                name: buffName,
-                value,
+                name: effectName,
+                magnitude,
             });
         }
         return newState;

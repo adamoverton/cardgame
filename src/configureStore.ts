@@ -8,20 +8,20 @@ export const defaultState: StoreState = {
         id: 'hero',
         hp: 10,
         maxHp: 50,
-        buffList: [],
+        effectList: [],
     },
     enemyList: [
         {
             id: 'enemy1',
             hp: 10,
             maxHp: 50,
-            buffList: [],
+            effectList: [],
         },
         {
             id: 'enemy2',
             hp: 20,
             maxHp: 100,
-            buffList: [],
+            effectList: [],
         }
     ],
     enemyIdIncrementer: 3,

@@ -7,7 +7,7 @@ import { playCard, endTurn } from 'src/actions/Turn';
 export const mapStateToProps = ({hero}: StoreState) => {
     return {
         hp: hero.hp,
-        buffs: hero.buffList,
+        buffs: hero.effectList,
     };
 };
 
