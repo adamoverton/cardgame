@@ -1,4 +1,5 @@
 import { StatusEffect } from 'src/GamePlay/Effect';
+import { Card } from 'src/GamePlay/Card';
 
 export interface Entity {
     id: string;
@@ -16,8 +17,17 @@ export interface Hero extends Entity {
 export interface Enemy extends Entity {
 }
 
+export interface BattleCards {
+    drawPile: Card[];
+    hand: Card[];
+    discardPile: Card[];
+    // exhaustPile: Card[];
+}
+
 export interface StoreState {
-    hero: Hero,
-    enemyList: Enemy[],
-    enemyIdIncrementer: number,
+    hero: Hero;
+    heroDeck: Card[];
+    battleCards: BattleCards;
+    enemyList: Enemy[];
+    enemyIdIncrementer: number;
 }

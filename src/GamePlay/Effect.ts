@@ -19,7 +19,7 @@ export enum EffectName {
     Vulnerable = "Vulnerable",
 }
 
-export interface EffectDefinition {
+export interface Effect {
     title: string;
     description: string;
     // image: string; // the image to show below the character
@@ -32,7 +32,7 @@ export interface EffectDefinition {
 // 
 // We should list a class associated with each effect that knows how to process it
 //
-export const EffectList = new Map<EffectName, EffectDefinition>([
+export const EffectDefinitions = new Map<EffectName, Effect>([
     [EffectName.BerserkEnergy, {
         title: 'Berserk Energy',
         description: 'Energy at start of turn',
@@ -51,15 +51,6 @@ export const EffectList = new Map<EffectName, EffectDefinition>([
     }],
 ]);
 
-// A cast is a way to apply an Effect. The Iron Wave card would have two casts: 
-// 1. Add 5 block to <self>
-// 2. Apply 5 damage to <target>
-export interface Cast {
-    effect: EffectName;
-    target: TargetType;
-    magnitude: number;
-}
-
 // A status effect is the ongoing amount a thing has
 // I might have 5 block, perhaps because of Iron Wave
 // Or maybe I have 3 because fuck frail
@@ -73,7 +64,7 @@ export interface StatusEffect {
 // Block will override onDamageTaken to reduce the amount of the damage and its own value, and also
 // override onTurnEnd to remove itself completely
 //
-export class Effect {
+export class UNUSED_Effect {
     onCombatStart: () => {}; 
     onCombatEnd: () => {};
     onTurnStart: () => {};
@@ -85,7 +76,7 @@ export class Effect {
 }
 
 // Do we make these ThunkType?
-export class BlockEffect extends Effect {
+export class BlockEffect extends UNUSED_Effect {
     // onDamageIn (dispatch, getState, targetId: string, damage: number): number {
     //     let block: number = getState.;
 

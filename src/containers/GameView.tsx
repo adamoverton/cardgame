@@ -4,11 +4,12 @@ import { StoreState } from 'src/types/StoreState';
 import 'src/components/GameView.css';
 import { playCard, endTurn } from 'src/actions/Turn';
 
-export const mapStateToProps = ({hero}: StoreState) => {
+export const mapStateToProps = ({hero, battleCards}: StoreState) => {
     return {
         hp: hero.hp,
         energy: hero.energy,
         effectList: hero.effectList,
+        hand: battleCards.hand,
     };
 };
 

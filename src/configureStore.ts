@@ -1,3 +1,4 @@
+import { CardDefinitions, CardName } from './GamePlay/Card';
 import { createStore, applyMiddleware } from 'redux';
 import {reducer} from 'src/reducers/GameReducer';
 import { StoreState } from 'src/types/StoreState';
@@ -11,6 +12,15 @@ export const defaultState: StoreState = {
         energy: 3,
         maxEnergy: 3,
         effectList: [],
+    },
+    heroDeck: [],
+    battleCards: {
+        drawPile: [CardDefinitions.get(CardName.Defend)!],
+        hand: [
+            CardDefinitions.get(CardName.Strike)!,
+            CardDefinitions.get(CardName.Defend)!,
+        ],
+        discardPile: [],
     },
     enemyList: [
         {
