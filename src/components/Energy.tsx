@@ -1,19 +1,19 @@
 import * as React from 'react';
 import {PureComponent, ReactNode} from 'react';
 
-export interface BaseHpProps {
-    hp: number;
+export interface EnergyProps {
+    energy: number;
 }
 
-export class BaseHp extends PureComponent<BaseHpProps> {
+export class Energy extends PureComponent<EnergyProps> {
     public render(): ReactNode {
         const {
-            hp = 50,
+            energy = 3,
         } = this.props;
 
         return (
-            <div className="heroHp">
-                HP: {hp}
+            <div className="energy">
+                Energy: {energy}
             </div>
         );
     }

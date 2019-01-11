@@ -9,6 +9,8 @@ export interface Entity {
 
 export interface Hero extends Entity {
     // relicList: Relic[];
+    energy: number;
+    maxEnergy: number;
 }
 
 export interface Enemy extends Entity {
