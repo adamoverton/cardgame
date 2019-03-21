@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {PureComponent, ReactNode} from 'react';
-import { GameStage } from 'src/components/GameStage';
+import { GameStage } from 'src/containers/GameStage';
 import { Hp } from 'src/components/Hp';
 import { StatusEffect } from 'src/GamePlay/Effect';
 import { EffectList } from 'src/components/EffectList';
