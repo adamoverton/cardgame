@@ -10,6 +10,7 @@ import { Hand } from 'src/components/Hand';
 
 export interface BaseGameViewProps {
     hp: number;
+    maxHp: number;
     energy: number;
     effectList: StatusEffect[];
     hand: Card[];
@@ -17,11 +18,22 @@ export interface BaseGameViewProps {
     endTurn: () => void;
 }
 
+export interface BaseGameViewDispatch extends Pick<BaseGameViewProps,
+"playCard" | "endTurn">{}
+
+export interface BaseGameViewState extends Pick<BaseGameViewProps,
+"hp" |
+"maxHp" |
+"energy" |
+"effectList" |
+"hand">{}
+
 export class BaseGameView extends PureComponent<BaseGameViewProps> {
     
     public render(): ReactNode {
         const {
             hp,
+            maxHp,
             energy,
             effectList,
             playCard,
@@ -31,7 +43,7 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
 
         return (
             <div className="gameView">
-                <Hp hp={hp} />
+                <Hp hp={hp} maxHp={maxHp}/>
                 <Energy energy={energy} />
                 <EffectList effectList={effectList}/>
                 <GameStage />

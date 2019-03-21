@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { BaseGameView } from 'src/components/BaseGameView';
+import { BaseGameView, BaseGameViewDispatch, BaseGameViewState } from 'src/components/BaseGameView';
 import { StoreState } from 'src/types/StoreState';
 import 'src/components/GameView.css';
 import { playCard, endTurn } from 'src/actions/Turn';
@@ -7,6 +7,7 @@ import { playCard, endTurn } from 'src/actions/Turn';
 export const mapStateToProps = ({hero, battleCards}: StoreState) => {
     return {
         hp: hero.hp,
+        maxHp: hero.maxHp,
         energy: hero.energy,
         effectList: hero.effectList,
         hand: battleCards.hand,
@@ -18,4 +19,4 @@ export const mapDispatchToProps = {
     endTurn,
 };
 
-export const GameView = connect(mapStateToProps, mapDispatchToProps)(BaseGameView);
+export const GameView = connect<BaseGameViewState, BaseGameViewDispatch>(mapStateToProps, mapDispatchToProps)(BaseGameView);
