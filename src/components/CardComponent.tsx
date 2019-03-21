@@ -7,10 +7,15 @@ export interface CardComponentProps {
     type: CardType;
     description: string;
     castList: Cast[];
+    playCard: (castList: Cast[], targetId: string) => void;
 }
 
 export class CardComponent extends PureComponent<CardComponentProps> {
-    public render(): ReactNode {
+    onclick = () => {
+        this.props.playCard(this.props.castList, "enemy1");
+    }
+
+    render(): ReactNode {
         const {
             title,
             description,
@@ -18,7 +23,7 @@ export class CardComponent extends PureComponent<CardComponentProps> {
         } = this.props;
 
         return (
-            <div className="card">
+            <div className="card" onClick={this.onclick}>
                 <div className="title">{title}</div>
                 <div className="description">{description}</div>
                 <div className="castList">

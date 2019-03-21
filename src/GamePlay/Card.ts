@@ -49,7 +49,7 @@ export const CardDefinitions = new Map<CardName, Card>([
         type: CardType.Attack,
         description: "I attack you",
         castList: [{
-            effect: EffectName.Health,
+            effect: EffectName.Attack,
             target: TargetType.Targetted,
             magnitude: 6,
         }],

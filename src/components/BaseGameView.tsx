@@ -5,7 +5,7 @@ import { Hp } from 'src/components/Hp';
 import { StatusEffect } from 'src/GamePlay/Effect';
 import { EffectList } from 'src/components/EffectList';
 import { Energy } from 'src/components/Energy';
-import { Card } from 'src/GamePlay/Card';
+import { Card, Cast } from 'src/GamePlay/Card';
 import { Hand } from 'src/components/Hand';
 
 export interface BaseGameViewProps {
@@ -14,7 +14,7 @@ export interface BaseGameViewProps {
     energy: number;
     effectList: StatusEffect[];
     hand: Card[];
-    playCard: () => void;
+    playCard: (castList: Cast[], targetId: string) => void;
     endTurn: () => void;
 }
 
@@ -47,13 +47,10 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
                 <Energy energy={energy} />
                 <EffectList effectList={effectList}/>
                 <GameStage />
-                <Hand cardList={hand}/>
-                <div
-                    className="playCard"
-                    onClick={playCard}
-                >
-                    Play Card
-                </div>
+                <Hand
+                    playCard={playCard}
+                    cardList={hand}
+                />
                 <div
                     className="endTurn"
                     onClick={endTurn}

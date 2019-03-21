@@ -1,3 +1,4 @@
+import { VulnerableDecorator, AttackCast } from 'src/Thunks/Turn';
 export enum Timing {
     Never, // For resetTiming
     Immediate, 
@@ -12,17 +13,37 @@ export enum TargetType {
     AllEnemy,
 }
 
+// Effects are statuses that are applied AND might reside to do something under certain circumstances
 export enum EffectName {
-    BerserkEnergy = "BerserkEnergy",
-    Block = "Block",
-    Health = "Health",
+    Attack = "Attack", // Applies immediately, does not reside
+    BerserkEnergy = "BerserkEnergy", // Applies a buff that adds energy at the start of turn
+    Block = "Block", // Applies a buff that reduces incoming damage
     Vulnerable = "Vulnerable",
+    Frail = "Frail",
 }
 
 export interface Effect {
     title: string;
     description: string;
     // image: string; // the image to show below the character
+}
+
+export interface EffectDecorationProp extends Effect {
+    applyAttackDecorator?: (cast: AttackCast) => AttackCast
+}
+
+export class EffectDecoration implements Effect {
+    title = "";
+    description = "";
+    applyAttackDecorator = (cast: AttackCast): AttackCast  => {
+        return cast;
+    }
+
+    constructor(props: EffectDecorationProp) {
+        this.title = this.title || props.title;
+        this.description = this.description || props.description;
+        this.applyAttackDecorator = this.applyAttackDecorator || props.applyAttackDecorator;
+    }
 }
 
 //
@@ -32,23 +53,28 @@ export interface Effect {
 // 
 // We should list a class associated with each effect that knows how to process it
 //
-export const EffectDefinitions = new Map<EffectName, Effect>([
-    [EffectName.BerserkEnergy, {
+export const EffectDefinitions = new Map<EffectName, EffectDecoration> ([
+    [EffectName.Attack, new EffectDecoration({
+        title: 'Attack',
+        description: 'Deal damage',
+    })],
+    [EffectName.BerserkEnergy, new EffectDecoration({
         title: 'Berserk Energy',
         description: 'Energy at start of turn',
-    }],
-    [EffectName.Block, {
+    })],
+    [EffectName.Block, new EffectDecoration({
         title: 'Block',
         description: 'Reduce incoming damage by this amount',
-    }],
-    [EffectName.Health, {
-        title: 'HP',
-        description: "Don't let this go below 1!",
-    }],
-    [EffectName.Vulnerable, {
+    })],
+    [EffectName.Vulnerable, new EffectDecoration({
         title: 'Vulnerable',
         description: 'Vulnerable increases attack damage by 50% for __ turns',
-    }],
+        applyAttackDecorator: (cast: AttackCast): AttackCast  => {return new VulnerableDecorator(cast)}
+    })],
+    [EffectName.Frail, new EffectDecoration({
+        title: 'Frail',
+        description: 'Reduces the amount of block points gained by 25%',
+    })],
 ]);
 
 // A status effect is the ongoing amount a thing has
@@ -57,29 +83,4 @@ export const EffectDefinitions = new Map<EffectName, Effect>([
 export interface StatusEffect {
     name: EffectName;
     magnitude: number; 
-}
-
-//
-// An effect is a default class that has an opportunity to apply its effect when certain events happen
-// Block will override onDamageTaken to reduce the amount of the damage and its own value, and also
-// override onTurnEnd to remove itself completely
-//
-export class UNUSED_Effect {
-    onCombatStart: () => {}; 
-    onCombatEnd: () => {};
-    onTurnStart: () => {};
-    onTurnEnd: () => {};
-    // Planned damage can be modified, but by default is unchanged
-    // onDamageOut (sourceId: string, damage: number): number { return damage; };
-    // onDamageIn (dispatch, getState, targetId: string, damage: number): number { return damage; };
-    // ? onCardPlayed: (card: Card) => {};
-}
-
-// Do we make these ThunkType?
-export class BlockEffect extends UNUSED_Effect {
-    // onDamageIn (dispatch, getState, targetId: string, damage: number): number {
-    //     let block: number = getState.;
-
-    //     return damage - block;
-    // }
 }
