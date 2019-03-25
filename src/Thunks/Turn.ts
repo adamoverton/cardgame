@@ -3,12 +3,12 @@ import { EffectDefinitions, EffectName } from 'src/GamePlay/Effect';
 import { Cast } from 'src/GamePlay/Card';
 
 export function playCard(castList: Cast[], targetId: string): ThunkType {
-    return (dispatch, getState, extraArguement) => {
+    return (dispatch, getState, extraArgument) => {
         // Apply the effects for each cast
         for (const cast of castList) {
             switch (cast.effect) {
                 case EffectName.Attack:
-                    attack(cast)(dispatch, getState, extraArguement);
+                    attack(cast)(dispatch, getState, extraArgument);
                     break;
             }
         }
@@ -16,7 +16,7 @@ export function playCard(castList: Cast[], targetId: string): ThunkType {
 };
 
 export function startCombat(): ThunkType {
-    return (dispatch, getState, extraArguement) => {
+    return (dispatch, getState, extraArgument) => {
         dispatch(Actions.ADD_ENEMY({
             hp: 10,
             maxHp: 50,
@@ -26,14 +26,14 @@ export function startCombat(): ThunkType {
 };
 
 export function endTurn(): ThunkType {
-    return (dispatch, getState, extraArguement) => {
+    return (dispatch, getState, extraArgument) => {
         dispatch(Actions.ADJUST_HP({targetEntityId: getState().hero.id, hp: -1}));
     };
 };
 
 // export function attack(dispatch: () => void, getState: () => StoreState, attackCast: Cast): void {
 export function attack(attackCast: Cast): ThunkType {
-    return (dispatch, getState, extraArguement) => {
+    return (dispatch, getState, extraArgument) => {
         // create attack
         let attackStep: AttackStep = new BasicMagnitudeAttack(attackCast.magnitude);
         
