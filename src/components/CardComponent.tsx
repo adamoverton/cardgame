@@ -7,12 +7,12 @@ export interface CardComponentProps {
     type: CardType;
     description: string;
     castList: Cast[];
-    playCard: (castList: Cast[], targetId: string) => void;
+    playCard: (castList: Cast[], sourceId: string, targetId: string) => void;
 }
 
 export class CardComponent extends PureComponent<CardComponentProps> {
     onclick = () => {
-        this.props.playCard(this.props.castList, "enemy1");
+        this.props.playCard(this.props.castList, "hero", "enemy1");
     }
 
     render(): ReactNode {

@@ -3,6 +3,7 @@ import { createStore, applyMiddleware } from 'redux';
 import {reducer} from 'src/reducers/GameReducer';
 import { StoreState } from 'src/types/StoreState';
 import thunk from 'redux-thunk';
+import { EffectName } from 'src/GamePlay/Effect';
 
 export const defaultState: StoreState = {
     hero: {
@@ -11,7 +12,12 @@ export const defaultState: StoreState = {
         maxHp: 50,
         energy: 3,
         maxEnergy: 3,
-        effectList: [],
+        effectList: [
+            {
+                name: EffectName.BerserkEnergy,
+                magnitude: 3,
+            },
+        ],
     },
     heroDeck: [],
     battleCards: {
@@ -19,6 +25,7 @@ export const defaultState: StoreState = {
         hand: [
             CardDefinitions.get(CardName.Strike)!,
             CardDefinitions.get(CardName.Defend)!,
+            CardDefinitions.get(CardName.Inflame)!,
         ],
         discardPile: [],
     },

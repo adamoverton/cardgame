@@ -14,7 +14,7 @@ export interface BaseGameViewProps {
     energy: number;
     effectList: StatusEffect[];
     hand: Card[];
-    playCard: (castList: Cast[], targetId: string) => void;
+    playCard: (castList: Cast[], sourceId: string, targetId: string) => void;
     endTurn: () => void;
 }
 

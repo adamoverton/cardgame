@@ -38,6 +38,7 @@ export interface Card {
 export enum CardName {
     Strike = "Strike",
     Defend = "Defend",
+    Inflame = "Inflame",
 }
 
 /**
@@ -62,6 +63,16 @@ export const CardDefinitions = new Map<CardName, Card>([
             effect: EffectName.Block,
             target: TargetType.Self,
             magnitude: 5,
+        }],
+    }],
+    [CardName.Inflame, {
+        title: "Inflame",
+        type: CardType.Skill,
+        description: "Gain strength",
+        castList: [{
+            effect: EffectName.Strength,
+            target: TargetType.Self,
+            magnitude: 2,
         }],
     }],
 ]);

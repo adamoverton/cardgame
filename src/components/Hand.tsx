@@ -5,7 +5,7 @@ import { CardComponent } from 'src/components/CardComponent';
 
 export interface HandProps {
     cardList: Card[];
-    playCard: (castList: Cast[], targetId: string) => void;
+    playCard: (castList: Cast[], sourceId: string, targetId: string) => void;
 }
 
 export class Hand extends PureComponent<HandProps> {

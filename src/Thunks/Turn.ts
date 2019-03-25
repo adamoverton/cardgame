@@ -1,14 +1,32 @@
 import { Actions, ThunkType } from 'src/actions/GameActions';
-import { EffectDefinitions, EffectName } from 'src/GamePlay/Effect';
+import { EffectDefinitions, EffectName, TargetType } from 'src/GamePlay/Effect';
 import { Cast } from 'src/GamePlay/Card';
+import { Entity, StoreState } from 'src/types/StoreState';
 
-export function playCard(castList: Cast[], targetId: string): ThunkType {
+export function playCard(castList: Cast[], sourceId: string, targetId: string): ThunkType {
     return (dispatch, getState, extraArgument) => {
         // Apply the effects for each cast
         for (const cast of castList) {
+            let castTarget = targetId;
+
+            switch(cast.target) {
+                case TargetType.Self:
+                    castTarget = sourceId;
+                    break;
+                default:
+                    // TODO: Fix other cast targets
+                    break;
+            }
             switch (cast.effect) {
                 case EffectName.Attack:
-                    attack(cast)(dispatch, getState, extraArgument);
+                    attack(cast, sourceId, targetId)(dispatch, getState, extraArgument);
+                    break;
+                case EffectName.Strength:
+                    dispatch(Actions.APPLY_EFFECT({
+                        effectName: cast.effect,
+                        targetId: castTarget,
+                        magnitude: cast.magnitude,
+                    }));
                     break;
             }
         }
@@ -26,16 +44,46 @@ export function startCombat(): ThunkType {
 };
 
 export function endTurn(): ThunkType {
+    // Do end of hero turn shenanigans
+
+    // Go through each enemy and do their turn
+    // for (const enemy of getState().enemyList)
+
     return (dispatch, getState, extraArgument) => {
         dispatch(Actions.ADJUST_HP({targetEntityId: getState().hero.id, hp: -1}));
     };
 };
 
-// export function attack(dispatch: () => void, getState: () => StoreState, attackCast: Cast): void {
-export function attack(attackCast: Cast): ThunkType {
+function getEntityById(id: string, state: StoreState): Entity {
+    return (id === "hero") ? state.hero : state.enemyList.find(enemy => enemy.id === id)!;
+}
+
+//
+// TODO: Revive this to apply decorations to this process!
+//
+// export function applyStatusEffect(cast: Cast, sourceId: string, targetId: string): ThunkType {
+//     return (dispatch, getState, extraArgument) => {
+//         const targetEntity = getEntityById(targetId, getState());
+//         const existingEffect = targetEntity.effectList.find(effect => effect.name === cast.effect);
+
+//         if (existingEffect) {
+//             existingEffect.magnitude += cast.magnitude;
+//         } else {
+//             targetEntity.effectList.push({
+//                 name: cast.effect,
+//                 magnitude: cast.magnitude,
+//             });
+//         }
+//     }
+// }
+
+export function attack(attackCast: Cast, sourceId: string, targetId: string): ThunkType {
     return (dispatch, getState, extraArgument) => {
         // create attack
         let attackStep: AttackStep = new BasicMagnitudeAttack(attackCast.magnitude);
+
+        const sourceEntity = getEntityById(sourceId, getState());
+        // const targetEntity = getEntityById(targetId, getState());
         
         // loop through all the status and apply relevant decorators
         // applyDecoratorsByType = () => {
@@ -43,8 +91,8 @@ export function attack(attackCast: Cast): ThunkType {
             // loop through all status effects of the attack source and the attack target
             // (relics can also be a source of status effects)
             // ask them if they want to decorate the attack
-            for (const statusEffect of getState().hero.effectList) {
-                attackStep = EffectDefinitions[statusEffect.name].applyAttackDecorator(attack);
+            for (const statusEffect of sourceEntity.effectList) {
+                attackStep = EffectDefinitions.get(statusEffect.name)!.applyAttackDecorator(attackStep);
             }
         // }
 
@@ -52,7 +100,7 @@ export function attack(attackCast: Cast): ThunkType {
         // TODO: We need to define some directionality of applying status effects because 
         // of strength/weak (source) vs vulnerable/block (target)
         // for (const statusEffect of getState().enemyList[0].effectList) {
-        //     attack = EffectDefinitions[statusEffect.name].applyAttackDecorator(attack);
+        //     attack = EffectDefinitions[statusEffect.name].applyAttackDecorator(attackStep);
         // }
 
         // calculate raw damage
@@ -72,7 +120,7 @@ export function attack(attackCast: Cast): ThunkType {
         // }
         dispatch(Actions.ADJUST_HP({
             hp: -damage,
-            targetEntityId: "enemy1"
+            targetEntityId: targetId,
         }));
     }
 };
@@ -117,6 +165,18 @@ export class AttackDecorator extends AttackStep {
 export class VulnerableDecorator extends AttackDecorator {
     getAttackPower = (): number => {
         return this._inner.getAttackPower() * 1.5;
+    }
+}
+
+export class StrengthDecorator extends AttackDecorator {
+    _strength: number;
+
+    constructor(inner: AttackStep, strength: number) {
+        super(inner);
+        this._strength = strength;
+    }
+    getAttackPower = (): number => {
+        return this._inner.getAttackPower() + this._strength;
     }
 }
 

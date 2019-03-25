@@ -36,30 +36,35 @@ export const reducer = (state: StoreState, action: ActionsType) => Actions.match
      * Add a hero buff matching the given name with the given value. If the buff already exists, add the given value
      * to the existing buff
      */
-    APPLY_EFFECT: ({effectName, magnitude}) => {
+    APPLY_EFFECT: ({effectName, targetId, magnitude}) => {
         // TODO: Should take an entity id and not just apply it to the hero
         //
         // TODO: oh my god having to care about not mutating existing state sucks. There's got to be a way where we
         // TODO: don't have to think so much about it in these reducers. Modularizing the state would help, but not fix.
-        let newState = {
-            ...state,
-            hero: {
-                ...state.hero,
-                effectList: [...state.hero.effectList]
-            }
-        };
+        if (targetId === "hero") {
+            let newState = {
+                ...state,
+                hero: {
+                    ...state.hero,
+                    effectList: [...state.hero.effectList]
+                }
+            };
 
-        // Having already made a copy, it is safe to mutate
-        const existingEffect = newState.hero.effectList.find(effect => effect.name === effectName);
-        if (existingEffect) {
-            existingEffect.magnitude += magnitude;
+            // Having already made a copy, it is safe to mutate
+            const existingEffect = newState.hero.effectList.find(effect => effect.name === effectName);
+            if (existingEffect) {
+                existingEffect.magnitude += magnitude;
+            } else {
+                newState.hero.effectList.push({
+                    name: effectName,
+                    magnitude,
+                });
+            }
+            return newState;
         } else {
-            newState.hero.effectList.push({
-                name: effectName,
-                magnitude,
-            });
+            // TODO:
+            return state;
         }
-        return newState;
     },
     ADD_ENEMY: (enemy) => ({
         ...state,
