@@ -3,17 +3,19 @@ import {PureComponent, ReactNode} from 'react';
 
 export interface EnergyProps {
     energy: number;
+    maxEnergy: number;
 }
 
 export class Energy extends PureComponent<EnergyProps> {
     public render(): ReactNode {
         const {
-            energy = 3,
+            energy,
+            maxEnergy,
         } = this.props;
 
         return (
             <div className="energy">
-                Energy: {energy}
+                Energy: {energy} / {maxEnergy}
             </div>
         );
     }

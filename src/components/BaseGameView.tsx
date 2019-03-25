@@ -5,16 +5,17 @@ import { Hp } from 'src/components/Hp';
 import { StatusEffect } from 'src/GamePlay/Effect';
 import { EffectList } from 'src/components/EffectList';
 import { Energy } from 'src/components/Energy';
-import { Card, Cast } from 'src/GamePlay/Card';
+import { Card } from 'src/GamePlay/Card';
 import { Hand } from 'src/components/Hand';
 
 export interface BaseGameViewProps {
     hp: number;
     maxHp: number;
     energy: number;
+    maxEnergy: number;
     effectList: StatusEffect[];
     hand: Card[];
-    playCard: (castList: Cast[], sourceId: string, targetId: string) => void;
+    playCard: (card: Card, sourceId: string, targetId: string) => void;
     endTurn: () => void;
 }
 
@@ -25,6 +26,7 @@ export interface BaseGameViewState extends Pick<BaseGameViewProps,
 "hp" |
 "maxHp" |
 "energy" |
+"maxEnergy" |
 "effectList" |
 "hand">{}
 
@@ -35,6 +37,7 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
             hp,
             maxHp,
             energy,
+            maxEnergy,
             effectList,
             playCard,
             endTurn,
@@ -44,7 +47,7 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
         return (
             <div className="gameView">
                 <Hp hp={hp} maxHp={maxHp}/>
-                <Energy energy={energy} />
+                <Energy energy={energy} maxEnergy={maxEnergy}/>
                 <EffectList effectList={effectList}/>
                 <GameStage />
                 <Hand

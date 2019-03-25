@@ -32,6 +32,31 @@ export const reducer = (state: StoreState, action: ActionsType) => Actions.match
 
         return newState;
     },
+
+    ADJUST_ENERGY: ({energy}) => {
+        let newState = {
+            ...state,
+            hero: {
+                ...state.hero,
+                energy: state.hero.energy + energy,
+            },
+        };
+
+        return newState;
+    },
+
+    SET_ENERGY: ({energy}) => {
+        let newState = {
+            ...state,
+            hero: {
+                ...state.hero,
+                energy,
+            },
+        };
+
+        return newState;
+    },
+    
     /**
      * Add a hero buff matching the given name with the given value. If the buff already exists, add the given value
      * to the existing buff

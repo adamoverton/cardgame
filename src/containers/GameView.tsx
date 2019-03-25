@@ -9,6 +9,7 @@ export const mapStateToProps = ({hero, battleCards}: StoreState) => {
         hp: hero.hp,
         maxHp: hero.maxHp,
         energy: hero.energy,
+        maxEnergy: hero.maxEnergy,
         effectList: hero.effectList,
         hand: battleCards.hand,
     };

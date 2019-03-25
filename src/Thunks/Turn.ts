@@ -1,15 +1,27 @@
 import { Actions, ThunkType } from 'src/actions/GameActions';
 import { EffectDefinitions, EffectName, TargetType } from 'src/GamePlay/Effect';
-import { Cast } from 'src/GamePlay/Card';
+import { Cast, Card } from 'src/GamePlay/Card';
 import { Entity, StoreState } from 'src/types/StoreState';
 
-export function playCard(castList: Cast[], sourceId: string, targetId: string): ThunkType {
+export function playCard(card: Card, sourceId: string, targetId: string): ThunkType {
     return (dispatch, getState, extraArgument) => {
+        const state = getState();
+
+        // When there is not enough Energy to play a card, don't play the card
+        if (state.hero.energy - card.energyCost < 0) {
+            return;
+        }
+
+        // Pay Energy cost for playing this card
+        dispatch(Actions.ADJUST_ENERGY({
+            energy: -card.energyCost,
+        }))
+
         // Apply the effects for each cast
-        for (const cast of castList) {
+        for (const cast of card.castList) {
             let castTarget = targetId;
 
-            switch(cast.target) {
+            switch (cast.target) {
                 case TargetType.Self:
                     castTarget = sourceId;
                     break;
@@ -50,7 +62,7 @@ export function endTurn(): ThunkType {
     // for (const enemy of getState().enemyList)
 
     return (dispatch, getState, extraArgument) => {
-        dispatch(Actions.ADJUST_HP({targetEntityId: getState().hero.id, hp: -1}));
+        dispatch(Actions.SET_ENERGY({ energy: getState().hero.maxEnergy }));
     };
 };
 
@@ -84,16 +96,16 @@ export function attack(attackCast: Cast, sourceId: string, targetId: string): Th
 
         const sourceEntity = getEntityById(sourceId, getState());
         // const targetEntity = getEntityById(targetId, getState());
-        
+
         // loop through all the status and apply relevant decorators
         // applyDecoratorsByType = () => {
-            // ...
-            // loop through all status effects of the attack source and the attack target
-            // (relics can also be a source of status effects)
-            // ask them if they want to decorate the attack
-            for (const statusEffect of sourceEntity.effectList) {
-                attackStep = EffectDefinitions.get(statusEffect.name)!.applyAttackDecorator(attackStep);
-            }
+        // ...
+        // loop through all status effects of the attack source and the attack target
+        // (relics can also be a source of status effects)
+        // ask them if they want to decorate the attack
+        for (const statusEffect of sourceEntity.effectList) {
+            attackStep = EffectDefinitions.get(statusEffect.name)!.applyAttackDecorator(attackStep);
+        }
         // }
 
         // loop through all the target's status' and apply them as well for attack
@@ -110,13 +122,13 @@ export function attack(attackCast: Cast, sourceId: string, targetId: string): Th
         // let block = getTargetBlock();
 
         // if (damage > block)  {
-            // block => 0;
-            // damage -= block;
+        // block => 0;
+        // damage -= block;
 
-            // If we call it applyXxx, it should actually do it. But then it will need dispatch and whatnot
-            //damage = applyUnblockedDamage(damage);
+        // If we call it applyXxx, it should actually do it. But then it will need dispatch and whatnot
+        //damage = applyUnblockedDamage(damage);
 
-            // TODO: invoke action to adjust the health of the target in the store
+        // TODO: invoke action to adjust the health of the target in the store
         // }
         dispatch(Actions.ADJUST_HP({
             hp: -damage,

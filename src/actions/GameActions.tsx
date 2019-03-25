@@ -5,6 +5,8 @@ import { StoreState, Enemy } from 'src/types/StoreState';
 
 export const Actions = unionize({
     ADJUST_HP: ofType<{ targetEntityId: string, hp: number }>(),
+    ADJUST_ENERGY: ofType<{ energy: number }>(),
+    SET_ENERGY: ofType<{ energy: number }>(),
     APPLY_EFFECT: ofType<{ effectName: EffectName, targetId: string, magnitude: number }>(),
     CLEAR_ENEMIES: ofType<{}>(),
     ADD_ENEMY: ofType<Partial<Enemy>>(),

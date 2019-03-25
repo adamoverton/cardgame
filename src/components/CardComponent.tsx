@@ -1,18 +1,26 @@
 import * as React from 'react';
 import {PureComponent, ReactNode} from 'react';
-import {CardType, Cast} from 'src/GamePlay/Card';
+import {CardType, Cast, Card} from 'src/GamePlay/Card';
 
 export interface CardComponentProps {
     title: string;
     type: CardType;
     description: string;
     castList: Cast[];
-    playCard: (castList: Cast[], sourceId: string, targetId: string) => void;
+    energyCost: number;
+    playCard: (card: Card, sourceId: string, targetId: string) => void;
 }
 
 export class CardComponent extends PureComponent<CardComponentProps> {
     onclick = () => {
-        this.props.playCard(this.props.castList, "hero", "enemy1");
+        const card: Card = {
+            title: this.props.title,
+            type: this.props.type,
+            description: this.props.description,
+            castList: this.props.castList,
+            energyCost: this.props.energyCost,
+        }
+        this.props.playCard(card, "hero", "enemy1");
     }
 
     render(): ReactNode {
@@ -20,6 +28,7 @@ export class CardComponent extends PureComponent<CardComponentProps> {
             title,
             description,
             castList,
+            energyCost,
         } = this.props;
 
         return (
@@ -30,7 +39,8 @@ export class CardComponent extends PureComponent<CardComponentProps> {
                     {castList.map(cast => {
                         return (<div>{cast.magnitude} {cast.effect}</div>)
                     })}
-                </div>
+                </div>    
+                <div className="energyCost">{energyCost} Energy</div>
             </div>
         );
     }

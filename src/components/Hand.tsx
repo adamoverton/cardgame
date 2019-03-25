@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {PureComponent, ReactNode} from 'react';
-import { Card, Cast } from 'src/GamePlay/Card';
+import { Card } from 'src/GamePlay/Card';
 import { CardComponent } from 'src/components/CardComponent';
 
 export interface HandProps {
     cardList: Card[];
-    playCard: (castList: Cast[], sourceId: string, targetId: string) => void;
+    playCard: (card: Card, sourceId: string, targetId: string) => void;
 }
 
 export class Hand extends PureComponent<HandProps> {
@@ -24,6 +24,7 @@ export class Hand extends PureComponent<HandProps> {
                             type={card.type}
                             description={card.description}
                             castList={card.castList}
+                            energyCost={card.energyCost}
                             playCard={playCard}
                         />)
                     })

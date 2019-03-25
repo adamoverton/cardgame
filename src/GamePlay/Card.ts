@@ -33,6 +33,7 @@ export interface Card {
     type: CardType;
     description: string;
     castList: Cast[];
+    energyCost: number;
 }
 
 export enum CardName {
@@ -54,6 +55,7 @@ export const CardDefinitions = new Map<CardName, Card>([
             target: TargetType.Targetted,
             magnitude: 6,
         }],
+        energyCost: 1,
     }],
     [CardName.Defend, {
         title: "Defend",
@@ -64,6 +66,7 @@ export const CardDefinitions = new Map<CardName, Card>([
             target: TargetType.Self,
             magnitude: 5,
         }],
+        energyCost: 1,
     }],
     [CardName.Inflame, {
         title: "Inflame",
@@ -74,5 +77,6 @@ export const CardDefinitions = new Map<CardName, Card>([
             target: TargetType.Self,
             magnitude: 2,
         }],
+        energyCost: 1,
     }],
 ]);
