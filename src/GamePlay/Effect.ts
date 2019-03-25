@@ -1,4 +1,4 @@
-import { VulnerableDecorator, AttackCast } from 'src/Thunks/Turn';
+import { VulnerableDecorator, AttackStep } from 'src/Thunks/Turn';
 export enum Timing {
     Never, // For resetTiming
     Immediate, 
@@ -29,20 +29,21 @@ export interface Effect {
 }
 
 export interface EffectDecorationProp extends Effect {
-    applyAttackDecorator?: (cast: AttackCast) => AttackCast
+    applyAttackDecorator?: (cast: AttackStep) => AttackStep
 }
 
 export class EffectDecoration implements Effect {
     title = "";
     description = "";
-    applyAttackDecorator = (cast: AttackCast): AttackCast  => {
-        return cast;
-    }
 
     constructor(props: EffectDecorationProp) {
         this.title = this.title || props.title;
         this.description = this.description || props.description;
         this.applyAttackDecorator = this.applyAttackDecorator || props.applyAttackDecorator;
+    }
+
+    applyAttackDecorator = (cast: AttackStep): AttackStep  => {
+        return cast;
     }
 }
 
@@ -68,8 +69,8 @@ export const EffectDefinitions = new Map<EffectName, EffectDecoration> ([
     })],
     [EffectName.Vulnerable, new EffectDecoration({
         title: 'Vulnerable',
-        description: 'Vulnerable increases attack damage by 50% for __ turns',
-        applyAttackDecorator: (cast: AttackCast): AttackCast  => {return new VulnerableDecorator(cast)}
+        description: 'Vulnerable entity takes 50% more attack damage for __ turns',
+        applyAttackDecorator: (cast: AttackStep): AttackStep  => new VulnerableDecorator(cast),
     })],
     [EffectName.Frail, new EffectDecoration({
         title: 'Frail',

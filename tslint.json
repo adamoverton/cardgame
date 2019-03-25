@@ -11,6 +11,8 @@
     "object-literal-sort-keys": false,
     "interface-name": false,
     "member-access": [true, "no-public"],
-    "ordered-imports": false
-  }
+    "ordered-imports": false,
+    "max-classes-per-file": [false, 1],
+    "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case", "allow-leading-underscore"]
+      }
 }
