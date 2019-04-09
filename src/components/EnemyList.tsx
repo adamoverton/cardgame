@@ -7,14 +7,7 @@ export interface EnemyListProps {
 }
 
 export class EnemyList extends PureComponent<EnemyListProps> {
-    private renderEnemy(enemy: Enemy): ReactNode {
-        return <div className="enemy" key={enemy.id}>
-            <div>name: {enemy.id}</div>
-            <div>hp: {enemy.hp} / {enemy.maxHp}</div>
-        </div>
-    }
-
-    public render(): ReactNode {
+    render(): ReactNode {
         const {enemies} = this.props;
 
         return (
@@ -22,5 +15,12 @@ export class EnemyList extends PureComponent<EnemyListProps> {
                 {enemies.map(this.renderEnemy)}
             </div>
         );
+    }
+    
+    private renderEnemy(enemy: Enemy): ReactNode {
+        return <div className="enemy" key={enemy.id}>
+            <div>name: {enemy.id}</div>
+            <div>hp: {enemy.hp} / {enemy.maxHp}</div>
+        </div>
     }
 }

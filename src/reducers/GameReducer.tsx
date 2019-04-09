@@ -71,7 +71,7 @@ export function createReducer() {
         // TODO: oh my god having to care about not mutating existing state sucks. There's got to be a way where we
         // TODO: don't have to think so much about it in these reducers. Modularizing the state would help, but not fix.
         if (payload.targetId === "hero") {
-            let newState = {
+            const newState = {
                 ...state,
                 hero: {
                     ...state.hero,

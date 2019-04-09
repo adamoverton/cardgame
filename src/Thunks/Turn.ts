@@ -66,7 +66,7 @@ export function endTurn(): ThunkType {
         dispatch(Actions.SetEnergy.create({ 
             energy: getState().hero.maxEnergy,
         }));
-    };3
+    };
 };
 
 function getEntityById(id: string, state: StoreState): Entity {
@@ -129,7 +129,7 @@ export function attack(attackCast: Cast, sourceId: string, targetId: string): Th
         // damage -= block;
 
         // If we call it applyXxx, it should actually do it. But then it will need dispatch and whatnot
-        //damage = applyUnblockedDamage(damage);
+        // damage = applyUnblockedDamage(damage);
 
         // TODO: invoke action to adjust the health of the target in the store
         // }
