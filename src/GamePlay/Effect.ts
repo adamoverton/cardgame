@@ -30,7 +30,7 @@ export interface Effect {
 }
 
 export interface EffectDecorationProp extends Effect {
-    applyAttackDecorator?: (cast: AttackStep) => AttackStep
+    applyAttackDecorator?: (cast: AttackStep, magnitude: number) => AttackStep
 }
 
 export class EffectDecoration implements Effect {
@@ -43,7 +43,7 @@ export class EffectDecoration implements Effect {
         this.applyAttackDecorator = props.applyAttackDecorator || this.applyAttackDecorator;
     }
 
-    applyAttackDecorator = (cast: AttackStep): AttackStep  => {
+    applyAttackDecorator = (cast: AttackStep, magnitude: number): AttackStep  => {
         return cast;
     }
 }
@@ -71,12 +71,12 @@ export const EffectDefinitions = new Map<EffectName, EffectDecoration> ([
     [EffectName.Vulnerable, new EffectDecoration({
         title: 'Vulnerable',
         description: 'Vulnerable entity takes 50% more attack damage for __ turns',
-        applyAttackDecorator: (cast: AttackStep): AttackStep  => new VulnerableDecorator(cast),
+        applyAttackDecorator: (cast: AttackStep, magnitude: number): AttackStep  => new VulnerableDecorator(cast),
     })],
     [EffectName.Strength, new EffectDecoration({
         title: 'Strength',
         description: 'Gain 2 strength',
-        applyAttackDecorator: (cast: AttackStep): AttackStep  => new StrengthDecorator(cast, 2),
+        applyAttackDecorator: (cast: AttackStep, magnitude: number): AttackStep  => new StrengthDecorator(cast, magnitude),
     })],
     [EffectName.Frail, new EffectDecoration({
         title: 'Frail',

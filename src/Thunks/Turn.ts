@@ -107,7 +107,7 @@ export function attack(attackCast: Cast, sourceId: string, targetId: string): Th
         // (relics can also be a source of status effects)
         // ask them if they want to decorate the attack
         for (const statusEffect of sourceEntity.effectList) {
-            attackStep = EffectDefinitions.get(statusEffect.name)!.applyAttackDecorator(attackStep);
+            attackStep = EffectDefinitions.get(statusEffect.name)!.applyAttackDecorator(attackStep, statusEffect.magnitude);
         }
         // }
 
