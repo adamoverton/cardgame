@@ -8,31 +8,25 @@ import { Energy } from 'src/components/Energy';
 import { Card } from 'src/GamePlay/Card';
 import { Hand } from 'src/components/Hand';
 
-export interface BaseGameViewProps {
+export interface BaseGameViewState {
     hp: number;
     maxHp: number;
     energy: number;
     maxEnergy: number;
     effectList: StatusEffect[];
     hand: Card[];
+}
+
+export interface BaseGameViewDispatch {
     playCard: (card: Card, sourceId: string, targetId: string) => void;
     endTurn: () => void;
 }
 
-export interface BaseGameViewDispatch extends Pick<BaseGameViewProps,
-"playCard" | "endTurn">{}
-
-export interface BaseGameViewState extends Pick<BaseGameViewProps,
-"hp" |
-"maxHp" |
-"energy" |
-"maxEnergy" |
-"effectList" |
-"hand">{}
+type BaseGameViewProps  = BaseGameViewState & BaseGameViewDispatch
 
 export class BaseGameView extends PureComponent<BaseGameViewProps> {
     
-    public render(): ReactNode {
+    render(): ReactNode {
         const {
             hp,
             maxHp,

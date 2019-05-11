@@ -1,7 +1,8 @@
-import { Actions, ThunkType } from 'src/actions/GameActions';
+import  * as Actions from 'src/actions/GameActions';
 import { EffectDefinitions, EffectName, TargetType } from 'src/GamePlay/Effect';
 import { Cast, Card } from 'src/GamePlay/Card';
 import { Entity, StoreState } from 'src/types/StoreState';
+import { ThunkType } from 'src/actions/GameActions';
 
 export function playCard(card: Card, sourceId: string, targetId: string): ThunkType {
     return (dispatch, getState, extraArgument) => {
@@ -13,7 +14,7 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
         }
 
         // Pay Energy cost for playing this card
-        dispatch(Actions.ADJUST_ENERGY({
+        dispatch(Actions.AdjustEnergy.create({
             energy: -card.energyCost,
         }))
 
@@ -34,7 +35,7 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
                     attack(cast, sourceId, targetId)(dispatch, getState, extraArgument);
                     break;
                 case EffectName.Strength:
-                    dispatch(Actions.APPLY_EFFECT({
+                    dispatch(Actions.ApplyEffect.create({
                         effectName: cast.effect,
                         targetId: castTarget,
                         magnitude: cast.magnitude,
@@ -47,7 +48,7 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
 
 export function startCombat(): ThunkType {
     return (dispatch, getState, extraArgument) => {
-        dispatch(Actions.ADD_ENEMY({
+        dispatch(Actions.AddEnemy.create({
             hp: 10,
             maxHp: 50,
             effectList: [],
@@ -62,7 +63,9 @@ export function endTurn(): ThunkType {
     // for (const enemy of getState().enemyList)
 
     return (dispatch, getState, extraArgument) => {
-        dispatch(Actions.SET_ENERGY({ energy: getState().hero.maxEnergy }));
+        dispatch(Actions.SetEnergy.create({ 
+            energy: getState().hero.maxEnergy,
+        }));
     };
 };
 
@@ -126,11 +129,12 @@ export function attack(attackCast: Cast, sourceId: string, targetId: string): Th
         // damage -= block;
 
         // If we call it applyXxx, it should actually do it. But then it will need dispatch and whatnot
-        //damage = applyUnblockedDamage(damage);
+        // damage = applyUnblockedDamage(damage);
 
         // TODO: invoke action to adjust the health of the target in the store
         // }
-        dispatch(Actions.ADJUST_HP({
+
+        dispatch(Actions.AdjustHp.create({
             hp: -damage,
             targetEntityId: targetId,
         }));
