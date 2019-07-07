@@ -18,9 +18,10 @@ export enum EffectName {
     Attack = "Attack", // Applies immediately, does not reside
     BerserkEnergy = "BerserkEnergy", // Applies a buff that adds energy at the start of turn
     Block = "Block", // Applies a buff that reduces incoming damage
-    Vulnerable = "Vulnerable",
-    Frail = "Frail",
-    Strength = "Strength",
+    Vulnerable = "Vulnerable", // Increases the damage taken by a percentage
+    Frail = "Frail", // Reduces the amount of block you apply by a percentage
+    Strength = "Strength", // Increases the amount of damage given by a flat amount
+    Weak = "Weak", // Reduces the amount of damage given by a percentage
 }
 
 export interface Effect {
@@ -81,6 +82,10 @@ export const EffectDefinitions = new Map<EffectName, EffectDecoration> ([
     [EffectName.Frail, new EffectDecoration({
         title: 'Frail',
         description: 'Reduces the amount of block points gained by 25%',
+    })],
+    [EffectName.Weak, new EffectDecoration({
+        title: 'Weak',
+        description: 'Reduces the amount of damage given by a 25%',
     })],
 ]);
 

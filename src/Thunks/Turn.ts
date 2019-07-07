@@ -1,8 +1,9 @@
 import  * as Actions from 'src/actions/GameActions';
 import { EffectDefinitions, EffectName, TargetType } from 'src/GamePlay/Effect';
 import { Cast, Card } from 'src/GamePlay/Card';
-import { Entity, StoreState } from 'src/types/StoreState';
+import { Entity, StoreState} from 'src/types/StoreState';
 import { ThunkType } from 'src/actions/GameActions';
+import randomInt from 'random-int';
 
 export function playCard(card: Card, sourceId: string, targetId: string): ThunkType {
     return (dispatch, getState, extraArgument) => {
@@ -20,27 +21,49 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
 
         // Apply the effects for each cast
         for (const cast of card.castList) {
-            let castTarget = targetId;
+            let castTargetList: string[] = [];
 
             switch (cast.target) {
                 case TargetType.Self:
-                    castTarget = sourceId;
+                    castTargetList.push(sourceId);
+                    break;
+                case TargetType.Targetted:
+                    castTargetList.push(targetId);
+                    break;
+                case TargetType.AllEnemy:
+                    for (let enemy of state.enemyList) {
+                        castTargetList.push(enemy.id);
+                    }
+                    break;
+                case TargetType.RandomEnemy:
+                    const randomArrayIndex = randomInt(0, state.enemyList.length - 1);
+                    castTargetList.push(state.enemyList[randomArrayIndex].id);
                     break;
                 default:
-                    // TODO: Fix other cast targets
+                    // Typing should prevent us from ever getting here.
+                    throw new Error('invalid cast target');
                     break;
             }
-            switch (cast.effect) {
-                case EffectName.Attack:
-                    attack(cast, sourceId, targetId)(dispatch, getState, extraArgument);
-                    break;
-                case EffectName.Strength:
-                    dispatch(Actions.ApplyEffect.create({
-                        effectName: cast.effect,
-                        targetId: castTarget,
-                        magnitude: cast.magnitude,
-                    }));
-                    break;
+            for (const castTarget of castTargetList) {
+                switch (cast.effect) {
+                    case EffectName.Attack:
+                        attack(cast, sourceId, castTarget)(dispatch, getState, extraArgument);
+                        break;
+                    case EffectName.Strength:
+                        dispatch(Actions.ApplyEffect.create({
+                            effectName: cast.effect,
+                            targetId: castTarget,
+                            magnitude: cast.magnitude,
+                        }));
+                        break;
+                    case EffectName.Weak:
+                        dispatch(Actions.ApplyEffect.create({
+                            effectName: cast.effect,
+                            targetId: castTarget,
+                            magnitude: cast.magnitude,
+                        }));
+                        break;
+                }
             }
         }
     };
