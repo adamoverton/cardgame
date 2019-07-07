@@ -1,7 +1,7 @@
 import {StoreState} from 'src/types/StoreState';
 import * as Actions from 'src/actions/GameActions';
 import { TypedReducer } from 'redoodle';
-import { defaultState } from 'src/configureStore';
+import { defaultState } from 'src/defaultState';
 
 export function createReducer() {
     const builder = TypedReducer.builder<StoreState>();
