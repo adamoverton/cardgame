@@ -1,6 +1,6 @@
 import { EffectName, StatusEffect } from 'src/GamePlay/Effect';
 import { StoreState } from 'src/types/StoreState';
-import { TypedAction } from "redoodle";
+import { TypedAction, Action } from "redoodle";
 import { ThunkAction } from 'redux-thunk';
 
 export const AdjustHp = TypedAction.define("gameplay::adjustHp")<{ 
@@ -16,10 +16,18 @@ export const SetEnergy = TypedAction.define("gameplay::setEnergy")<{
     energy: number;
 }>();
 
+export const ResetEnergy = TypedAction.define("gameplay::resetEnergy")<{
+}>();
+
 export const ApplyEffect  = TypedAction.define("gameplay::applyEffect")<{
     effectName: EffectName;
     targetId: string;
     magnitude: number;
+}>();
+
+export const ClearEffect = TypedAction.define("gameplay::clearEffect")<{
+    effectName: EffectName;
+    targetId: string;
 }>();
 
 export const ClearEnemies  = TypedAction.define("gameplay::clearEnemies")<{
@@ -36,4 +44,4 @@ export const RemoveEnemy  = TypedAction.define("gameplay::removeEnemy")<{
 }>();
 
 // TODO: Last any was supposed to be union of types...we don't have access to?
-export type ThunkType = ThunkAction<void, StoreState, void, any>
+export type ThunkType = ThunkAction<void, StoreState, void, Action>

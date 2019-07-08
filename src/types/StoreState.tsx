@@ -31,3 +31,5 @@ export interface StoreState {
     enemyList: Enemy[];
     enemyIdIncrementer: number;
 }
+
+export const kHeroId = "hero";

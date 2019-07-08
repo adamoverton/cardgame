@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {PureComponent, ReactNode} from 'react';
 import {CardType, Cast, Card} from 'src/GamePlay/Card';
+import { kHeroId } from 'src/types/StoreState';
 
 export interface CardComponentProps {
     title: string;
@@ -20,7 +21,7 @@ export class CardComponent extends PureComponent<CardComponentProps> {
             castList: this.props.castList,
             energyCost: this.props.energyCost,
         }
-        this.props.playCard(card, "hero", "enemy1");
+        this.props.playCard(card, kHeroId, "enemy1");
     }
 
     render(): ReactNode {

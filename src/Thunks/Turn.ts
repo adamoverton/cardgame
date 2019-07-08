@@ -1,7 +1,7 @@
 import  * as Actions from 'src/actions/GameActions';
 import { EffectDefinitions, EffectName, TargetType } from 'src/GamePlay/Effect';
 import { Cast, Card } from 'src/GamePlay/Card';
-import { Entity, StoreState } from 'src/types/StoreState';
+import { Entity, StoreState, kHeroId } from 'src/types/StoreState';
 import { ThunkType } from 'src/actions/GameActions';
 
 export function playCard(card: Card, sourceId: string, targetId: string): ThunkType {
@@ -56,21 +56,34 @@ export function startCombat(): ThunkType {
     };
 };
 
+export const heroStartTurnUpkeep: ThunkType = (dispatch, getState, extraArgument) => {
+    const state = getState();
+    const sourceEntity = getEntityById(kHeroId, state);
+
+    // The basics
+    dispatch(Actions.ResetEnergy.create({}));
+
+    // loop through all status effects and call them with the event
+    for (const statusEffect of sourceEntity.effectList) {
+        EffectDefinitions.get(statusEffect.name)!.onHeroStartTurnUpkeep(statusEffect)(dispatch, getState, extraArgument);
+    }
+}
+
 export function endTurn(): ThunkType {
-    // Do end of hero turn shenanigans
+    return (dispatch, getState, extraArgument) => {
+    // 
+    // Do end of hero turn upkeep
+    //  
+
 
     // Go through each enemy and do their turn
     // for (const enemy of getState().enemyList)
-
-    return (dispatch, getState, extraArgument) => {
-        dispatch(Actions.SetEnergy.create({ 
-            energy: getState().hero.maxEnergy,
-        }));
+        heroStartTurnUpkeep(dispatch, getState, extraArgument);
     };
 };
 
 function getEntityById(id: string, state: StoreState): Entity {
-    return (id === "hero") ? state.hero : state.enemyList.find(enemy => enemy.id === id)!;
+    return (id === kHeroId) ? state.hero : state.enemyList.find(enemy => enemy.id === id)!;
 }
 
 //
@@ -95,7 +108,7 @@ function getEntityById(id: string, state: StoreState): Entity {
 export function attack(attackCast: Cast, sourceId: string, targetId: string): ThunkType {
     return (dispatch, getState, extraArgument) => {
         // create attack
-        let attackStep: AttackStep = new BasicMagnitudeAttack(attackCast.magnitude);
+        let attackStep: AttackStep = new MagnitudeAttack(attackCast.magnitude);
 
         const sourceEntity = getEntityById(sourceId, getState());
         // const targetEntity = getEntityById(targetId, getState());
@@ -152,7 +165,7 @@ export class AttackStep {
     }
 }
 
-export class BasicMagnitudeAttack extends AttackStep {
+export class MagnitudeAttack extends AttackStep {
     protected _damage: number;
 
     constructor(damage: number) {
@@ -195,9 +208,3 @@ export class StrengthDecorator extends AttackDecorator {
         return this._inner.getAttackPower() + this._strength;
     }
 }
-
-// class WeakDecorator extends AttackDecorator {
-//     getAttackPower = (): number => {
-//         return this._inner.getAttackPower() * .75;
-//     }
-// }

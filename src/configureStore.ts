@@ -17,6 +17,10 @@ export const defaultState: StoreState = {
                 name: EffectName.BerserkEnergy,
                 magnitude: 3,
             },
+            {
+                name: EffectName.Vulnerable,
+                magnitude: 2,
+            },
         ],
     },
     heroDeck: [],

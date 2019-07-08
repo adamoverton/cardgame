@@ -1,4 +1,4 @@
-import {StoreState} from 'src/types/StoreState';
+import {StoreState, kHeroId} from 'src/types/StoreState';
 import * as Actions from 'src/actions/GameActions';
 import { TypedReducer } from 'redoodle';
 import { defaultState } from 'src/configureStore';
@@ -60,6 +60,18 @@ export function createReducer() {
 
         return newState;
     });
+
+    builder.withHandler(Actions.ResetEnergy.TYPE, (state, payload) => {
+        const newState = {
+            ...state,
+            hero: {
+                ...state.hero,
+                energy: state.hero.maxEnergy,
+            }
+        };
+
+        return newState;
+    });
     
     /**
      * Add a hero buff matching the given name with the given value. If the buff already exists, add the given value
@@ -70,7 +82,7 @@ export function createReducer() {
         //
         // TODO: oh my god having to care about not mutating existing state sucks. There's got to be a way where we
         // TODO: don't have to think so much about it in these reducers. Modularizing the state would help, but not fix.
-        if (payload.targetId === "hero") {
+        if (payload.targetId === kHeroId) {
             const newState = {
                 ...state,
                 hero: {
@@ -83,12 +95,38 @@ export function createReducer() {
             const existingEffect = newState.hero.effectList.find(effect => effect.name === payload.effectName);
             if (existingEffect) {
                 existingEffect.magnitude += payload.magnitude;
+                if (existingEffect.magnitude === 0) {
+                    newState.hero.effectList = newState.hero.effectList.filter(effect => effect.name !== payload.effectName);
+                }
             } else {
                 newState.hero.effectList.push({
                     name: payload.effectName,
                     magnitude: payload.magnitude,
                 });
             }
+            return newState;
+        } else {
+            // TODO:
+            return state;
+        }
+    });
+
+    /**
+     * Add a hero buff matching the given name with the given value. If the buff already exists, add the given value
+     * to the existing buff
+     */
+    builder.withHandler(Actions.ClearEffect.TYPE, (state, payload) => {
+        if (payload.targetId === kHeroId) {
+            const newState = {
+                ...state,
+                hero: {
+                    ...state.hero,
+                    effectList: [...state.hero.effectList]
+                }
+            };
+
+            // Having already made a copy, it is safe to mutate
+            newState.hero.effectList = newState.hero.effectList.filter(effect => effect.name !== payload.effectName);
             return newState;
         } else {
             // TODO:
