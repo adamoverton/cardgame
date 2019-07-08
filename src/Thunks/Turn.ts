@@ -79,29 +79,35 @@ export function startCombat(): ThunkType {
     };
 };
 
-export const heroStartTurnUpkeep: ThunkType = (dispatch, getState, extraArgument) => {
-    const state = getState();
-    const sourceEntity = getEntityById(kHeroId, state);
+export function startTurnUpkeep(entityId: string): ThunkType {
+    return (dispatch, getState, extraArgument) => {
+        const state = getState();
+        const entity = getEntityById(entityId, state);
 
-    // The basics
-    dispatch(Actions.ResetEnergy.create({}));
-
-    // loop through all status effects and call them with the event
-    for (const statusEffect of sourceEntity.effectList) {
-        EffectDefinitions.get(statusEffect.name)!.onHeroStartTurnUpkeep(statusEffect)(dispatch, getState, extraArgument);
+        // loop through all status effects and call them with the event
+        for (const statusEffect of entity.effectList) {
+            EffectDefinitions.get(statusEffect.name)!.onStartTurnUpkeep(entity, statusEffect)(dispatch, getState, extraArgument);
+        }
     }
 }
 
 export function endTurn(): ThunkType {
     return (dispatch, getState, extraArgument) => {
-    // 
-    // Do end of hero turn upkeep
-    //  
+        // 
+        // Do end of hero turn upkeep
+        //  
 
 
-    // Go through each enemy and do their turn
-    // for (const enemy of getState().enemyList)
-        heroStartTurnUpkeep(dispatch, getState, extraArgument);
+        // Go through each enemy and do their turn
+        for (const enemy of getState().enemyList) {
+            startTurnUpkeep(enemy.id)(dispatch, getState, extraArgument);
+        }
+
+        // Hero's turn again
+        // The basics
+        dispatch(Actions.ResetEnergy.create({}));
+
+        startTurnUpkeep(kHeroId)(dispatch, getState, extraArgument);
     };
 };
 

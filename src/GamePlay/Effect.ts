@@ -1,7 +1,7 @@
 import  * as Actions from 'src/actions/GameActions';
 import { VulnerableDecorator, AttackStep, StrengthDecorator } from 'src/Thunks/Turn';
 import { ThunkType } from 'src/actions/GameActions';
-import { kHeroId } from 'src/types/StoreState';
+import { Entity } from 'src/types/StoreState';
 
 export enum Timing {
     Never, // For resetTiming
@@ -36,7 +36,7 @@ export interface Effect {
 
 export interface EffectDecorationProp extends Effect {
     applyAttackDecorator?: (cast: AttackStep, magnitude: number) => AttackStep;
-    onHeroStartTurnUpkeep?: (statusEffect: StatusEffect) => ThunkType;
+    onStartTurnUpkeep?: (entity: Entity, statusEffect: StatusEffect) => ThunkType;
     autoDecrementAfterUpkeep?: boolean;
 }
 
@@ -44,13 +44,13 @@ export class EffectDecoration implements Effect {
     title = "";
     description = "";
     autoDecrementAfterUpkeep = false;
-    onHeroStartTurnUpkeepProvided: (statusEffect: StatusEffect) => ThunkType;
+    onStartTurnUpkeepProvided: (entity: Entity, statusEffect: StatusEffect) => ThunkType;
 
     constructor(props: EffectDecorationProp) {
         this.title = this.title || props.title;
         this.description = this.description || props.description;
         this.applyAttackDecorator = props.applyAttackDecorator || this.applyAttackDecorator;
-        this.onHeroStartTurnUpkeepProvided = props.onHeroStartTurnUpkeep || this.onUpkeepBlank;
+        this.onStartTurnUpkeepProvided = props.onStartTurnUpkeep || this.onUpkeepBlank;
         this.autoDecrementAfterUpkeep = props.autoDecrementAfterUpkeep || this.autoDecrementAfterUpkeep;
     }
 
@@ -59,20 +59,20 @@ export class EffectDecoration implements Effect {
         return cast;
     }
 
-    onHeroStartTurnUpkeep(statusEffect: StatusEffect): ThunkType {
+    onStartTurnUpkeep(entity: Entity, statusEffect: StatusEffect): ThunkType {
         return (dispatch, getState, extraArgument) => {
-            this.onHeroStartTurnUpkeepProvided(statusEffect)(dispatch, getState, extraArgument);
+            this.onStartTurnUpkeepProvided(entity, statusEffect)(dispatch, getState, extraArgument);
             if (this.autoDecrementAfterUpkeep) {
                 dispatch(Actions.ApplyEffect.create({
                     effectName: statusEffect.name,
-                    targetId: kHeroId,
+                    targetId: entity.id,
                     magnitude: -1,
                 }));
             }
         };
     }
 
-    onUpkeepBlank(statusEffect: StatusEffect): ThunkType {
+    onUpkeepBlank(entity: Entity, statusEffect: StatusEffect): ThunkType {
         return (dispatch, getState, extraArgument) => {
         };
     }
@@ -94,7 +94,7 @@ export const EffectDefinitions = new Map<EffectName, EffectDecoration> ([
     [EffectName.BerserkEnergy, new EffectDecoration({
         title: 'Berserk Energy',
         description: 'Energy at start of turn',
-        onHeroStartTurnUpkeep: (statusEffect: StatusEffect): ThunkType => {
+        onStartTurnUpkeep: (entity: Entity, statusEffect: StatusEffect): ThunkType => {
             return (dispatch, getState, extraArgument) => {
                 dispatch(Actions.AdjustEnergy.create({
                         energy: statusEffect.magnitude,
@@ -125,6 +125,7 @@ export const EffectDefinitions = new Map<EffectName, EffectDecoration> ([
     [EffectName.Weak, new EffectDecoration({
         title: 'Weak',
         description: 'Reduces the amount of damage given by a 25%',
+        autoDecrementAfterUpkeep: true,
     })],
 ]);
 
