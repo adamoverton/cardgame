@@ -13,7 +13,7 @@ export function createReducer() {
         const newState = {
             ...state,
         }
-        if (payload.targetEntityId === 'hero') {
+        if (payload.targetEntityId === kHeroId) {
             newState.hero = {
                 ...state.hero,
                 hp: state.hero.hp + payload.hp,
@@ -125,26 +125,42 @@ export function createReducer() {
     });
 
     /**
-     * Add a hero buff matching the given name with the given value. If the buff already exists, add the given value
-     * to the existing buff
+     * Remove all effects matching the given name with the given value.
      */
     builder.withHandler(Actions.ClearEffect.TYPE, (state, payload) => {
-        if (payload.targetId === kHeroId) {
-            const newState = {
-                ...state,
-                hero: {
-                    ...state.hero,
-                    effectList: [...state.hero.effectList]
-                }
-            };
+        // Create a new state with both a new hero and enemy list, because we may be targeting either of them
+        const newState = {
+            ...state,
+            hero: {
+                ...state.hero,
+            },
+            enemyList: [
+                ...state.enemyList,
+            ]
+        };
+        let target: Entity | undefined;
 
-            // Having already made a copy, it is safe to mutate
-            newState.hero.effectList = newState.hero.effectList.filter(effect => effect.name !== payload.effectName);
-            return newState;
+        // Find the target in the new state
+        if (payload.targetId === "hero") {
+            target = newState.hero;
         } else {
-            // TODO:
-            return state;
+            // We must be targeting an enemy if we aren't targeting the hero
+
+            target = newState.enemyList.find(enemy => {
+                return enemy.id === payload.targetId;
+            });
+
+            if (target === undefined) {
+                throw new Error("We didn't find a target to buff, but we were expecting to!");
+            }
         }
+
+        // Clone the target's effectList now that we have the target (because immutability)
+        target.effectList = [...target.effectList];
+
+        // It is now safe to mutate the effect list on our target
+        target.effectList = target.effectList.filter(effect => effect.name !== payload.effectName);
+        return newState;
     });
 
     builder.withHandler(Actions.AddEnemy.TYPE, (state, payload) => {

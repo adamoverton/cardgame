@@ -1,10 +1,10 @@
-import { StoreState } from "./types/StoreState";
+import { StoreState, kHeroId } from "./types/StoreState";
 import { EffectName } from "./GamePlay/Effect";
 import { CardDefinitions, CardName } from "./GamePlay/Card";
 
 export const defaultState: StoreState = {
     hero: {
-        id: 'hero',
+        id: kHeroId,
         hp: 10,
         maxHp: 50,
         energy: 3,
