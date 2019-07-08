@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "outDir": "build/dist",
-    "module": "esnext",
+    "module": "es2015",
     "target": "es5",
     "lib": ["es6", "dom"],
     "sourceMap": true,

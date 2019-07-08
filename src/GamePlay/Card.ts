@@ -40,6 +40,7 @@ export enum CardName {
     Strike = "Strike",
     Defend = "Defend",
     Inflame = "Inflame",
+    Uppercut = "Uppercut",
 }
 
 /**
@@ -76,6 +77,17 @@ export const CardDefinitions = new Map<CardName, Card>([
             effect: EffectName.Strength,
             target: TargetType.Self,
             magnitude: 2,
+        }],
+        energyCost: 1,
+    }],
+    [CardName.Uppercut, {
+        title: "Uppercut",
+        type: CardType.Skill,
+        description: "Deals damage and applies weak to the target",
+        castList: [{
+            effect: EffectName.Weak,
+            target: TargetType.Targetted,
+            magnitude: 1,
         }],
         energyCost: 1,
     }],

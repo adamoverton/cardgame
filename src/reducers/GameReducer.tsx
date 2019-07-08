@@ -1,15 +1,15 @@
-import {StoreState, kHeroId} from 'src/types/StoreState';
+import {StoreState, kHeroId, Entity} from 'src/types/StoreState';
 import * as Actions from 'src/actions/GameActions';
 import { TypedReducer } from 'redoodle';
-import { defaultState } from 'src/configureStore';
+import { defaultState } from 'src/defaultState';
 
 export function createReducer() {
     const builder = TypedReducer.builder<StoreState>();
 
     builder.withHandler(Actions.AdjustHp.TYPE, (state, payload) => {
-    /**
-     * Increment/decrement the hero hp by the given value
-     */
+        /**
+         * Increment/decrement the hero hp by the given value
+         */
         const newState = {
             ...state,
         }
@@ -74,41 +74,54 @@ export function createReducer() {
     });
     
     /**
-     * Add a hero buff matching the given name with the given value. If the buff already exists, add the given value
-     * to the existing buff
+     * Add a buff to the given target matching the given name with the given value. If the buff already exists, add the
+     * given value to the existing buff
      */
     builder.withHandler(Actions.ApplyEffect.TYPE, (state, payload) => {
-        // TODO: Should take an entity id and not just apply it to the hero
-        //
-        // TODO: oh my god having to care about not mutating existing state sucks. There's got to be a way where we
-        // TODO: don't have to think so much about it in these reducers. Modularizing the state would help, but not fix.
-        if (payload.targetId === kHeroId) {
-            const newState = {
-                ...state,
-                hero: {
-                    ...state.hero,
-                    effectList: [...state.hero.effectList]
-                }
-            };
+        // Create a new state with both a new hero and enemy list, because we may be targeting either of them
+        const newState = {
+            ...state,
+            hero: {
+                ...state.hero,
+            },
+            enemyList: [
+                ...state.enemyList,
+            ]
+        };
+        let target: Entity | undefined;
 
-            // Having already made a copy, it is safe to mutate
-            const existingEffect = newState.hero.effectList.find(effect => effect.name === payload.effectName);
-            if (existingEffect) {
-                existingEffect.magnitude += payload.magnitude;
-                if (existingEffect.magnitude === 0) {
-                    newState.hero.effectList = newState.hero.effectList.filter(effect => effect.name !== payload.effectName);
-                }
-            } else {
-                newState.hero.effectList.push({
-                    name: payload.effectName,
-                    magnitude: payload.magnitude,
-                });
-            }
-            return newState;
+        // Find the target in the new state
+        if (payload.targetId === "hero") {
+            target = newState.hero;
         } else {
-            // TODO:
-            return state;
+            // We must be targeting an enemy if we aren't targeting the hero
+
+            target = newState.enemyList.find(enemy => {
+                return enemy.id === payload.targetId;
+            });
+
+            if (target === undefined) {
+                throw new Error("We didn't find a target to buff, but we were expecting to!");
+            }
         }
+
+        // Clone the target's effectList now that we have the target (because immutability)
+        target.effectList = [...target.effectList];
+
+        // It is now safe to mutate the effect list on our target
+        const existingEffect = target.effectList.find(effect => effect.name === payload.effectName);
+        if (existingEffect) {
+            existingEffect.magnitude += payload.magnitude;
+            if (existingEffect.magnitude === 0) {
+                target.effectList = target.effectList.filter(effect => effect.name !== payload.effectName);
+            }            
+        } else {
+            target.effectList.push({
+                name: payload.effectName,
+                magnitude: payload.magnitude,
+            });
+        }
+        return newState;
     });
 
     /**
