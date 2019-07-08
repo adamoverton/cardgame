@@ -23,6 +23,7 @@ export const defaultState: StoreState = {
             CardDefinitions.get(CardName.Strike)!,
             CardDefinitions.get(CardName.Defend)!,
             CardDefinitions.get(CardName.Inflame)!,
+            CardDefinitions.get(CardName.Uppercut)!,
         ],
         discardPile: [],
     },
