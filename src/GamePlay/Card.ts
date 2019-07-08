@@ -42,6 +42,7 @@ export enum CardName {
     Defend = "Defend",
     Inflame = "Inflame",
     Uppercut = "Uppercut",
+    BlockTest = "BlockTest",
 }
 
 /**
@@ -69,6 +70,18 @@ export const CardDefinitions = new Map<CardName, Card>([
             effect: EffectName.Block,
             target: TargetType.Self,
             magnitude: 5,
+        }],
+        energyCost: 1,
+    }],
+    [CardName.BlockTest, {
+        id: 0,
+        title: "Block Test",
+        type: CardType.Skill,
+        description: "I block for you?",
+        castList: [{
+            effect: EffectName.Block,
+            target: TargetType.Targetted,
+            magnitude: 8,
         }],
         energyCost: 1,
     }],

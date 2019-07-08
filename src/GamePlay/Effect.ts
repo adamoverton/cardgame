@@ -1,6 +1,6 @@
 import  * as Actions from 'src/actions/GameActions';
-import { VulnerableDecorator, AttackStep, StrengthDecorator } from 'src/Thunks/Turn';
-import { Entity, ThunkType } from 'src/types/StoreState';
+import { AttackStep, StrengthDecorator } from 'src/Thunks/Turn';
+import { Entity, kHeroId, ThunkType } from 'src/types/StoreState';
 
 export enum Timing {
     Never, // For resetTiming
@@ -104,11 +104,19 @@ export const EffectDefinitions = new Map<EffectName, EffectDecoration> ([
     [EffectName.Block, new EffectDecoration({
         title: 'Block',
         description: 'Reduce incoming damage by this amount',
+        onStartTurnUpkeep: (entity: Entity, statusEffect: StatusEffect): ThunkType => {
+            return (dispatch, getState, extraArgument) => {
+                dispatch(Actions.ClearEffect.create({
+                    effectName: EffectName.Block,
+                    targetId: kHeroId,
+                }));
+            }
+        }
     })],
     [EffectName.Vulnerable, new EffectDecoration({
         title: 'Vulnerable',
         description: 'Vulnerable entity takes 50% more attack damage for __ turns',
-        applyAttackDecorator: (cast: AttackStep, magnitude: number): AttackStep  => new VulnerableDecorator(cast),
+        // applyAttackDecorator: (cast: AttackStep, magnitude: number): AttackStep  => new VulnerableDecorator(cast),
         autoDecrementAfterUpkeep: true,
     })],
     [EffectName.Strength, new EffectDecoration({

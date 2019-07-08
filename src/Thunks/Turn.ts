@@ -62,6 +62,13 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
                             magnitude: cast.magnitude,
                         }));
                         break;
+                    case EffectName.Block:
+                        dispatch(Actions.ApplyEffect.create({
+                            effectName: cast.effect,
+                            targetId: castTarget,
+                            magnitude: cast.magnitude,
+                        }));
+                        break;
                 }
             }
         }
@@ -123,9 +130,9 @@ export function startTurnUpkeep(entityId: string): ThunkType {
 
 export function endTurn(): ThunkType {
     return (dispatch, getState, extraArgument) => {
-        // 
+        //
         // Do end of hero turn upkeep
-        //  
+        //
 
         // Move hand to discard pile
         dispatch(Actions.DiscardHand.create({}));
@@ -176,7 +183,7 @@ export function attack(attackCast: Cast, sourceId: string, targetId: string): Th
         let attackStep: AttackStep = new MagnitudeAttack(attackCast.magnitude);
 
         const sourceEntity = getEntityById(sourceId, getState());
-        // const targetEntity = getEntityById(targetId, getState());
+        const targetEntity = getEntityById(targetId, getState());
 
         // loop through all the status and apply relevant decorators
         // applyDecoratorsByType = () => {
@@ -196,28 +203,34 @@ export function attack(attackCast: Cast, sourceId: string, targetId: string): Th
         //     attack = EffectDefinitions[statusEffect.name].applyAttackDecorator(attackStep);
         // }
 
-        // calculate raw damage
-        const damage = attackStep.getAttackPower();
+        // Calculate damage amounts
+        let incomingDamage = attackStep.getAttackPower();
+        let damageToFace = incomingDamage;
 
-        // TODO: define getTargetBlock();
-        // let block = getTargetBlock();
+        // Consider block
+        const blockEffect = targetEntity.effectList.find( effect => {
+            return effect.name === EffectName.Block;
+        });
 
-        // if (damage > block)  {
-        // block => 0;
-        // damage -= block;
+        if (blockEffect) {
+            damageToFace = damageToFace - blockEffect.magnitude;
+            damageToFace = damageToFace < 0 ? 0 : damageToFace;
 
-        // If we call it applyXxx, it should actually do it. But then it will need dispatch and whatnot
-        // damage = applyUnblockedDamage(damage);
-
-        // TODO: invoke action to adjust the health of the target in the store
-        // }
+            // Adjust block effect due to damage
+            const blockAmountUsed = damageToFace > 0 ? blockEffect.magnitude : incomingDamage;
+            dispatch(Actions.ApplyEffect.create({
+                effectName: EffectName.Block,
+                targetId: targetId,
+                magnitude: -blockAmountUsed,
+            }));
+        }
 
         dispatch(Actions.AdjustHp.create({
-            hp: -damage,
+            hp: -damageToFace,
             targetEntityId: targetId,
         }));
     }
-};
+}
 
 // const applyUnblockedDamage = (unblockedDamage: number) => {
 //     // TODO: loop through iterators and adjust the unblocked damage
@@ -256,11 +269,11 @@ export class AttackDecorator extends AttackStep {
     }
 }
 
-export class VulnerableDecorator extends AttackDecorator {
-    getAttackPower = (): number => {
-        return this._inner.getAttackPower() * 1.5;
-    }
-}
+// export class VulnerableDecorator extends AttackDecorator {
+//     getAttackPower = (): number => {
+//         return this._inner.getAttackPower() * 1.5;
+//     }
+// }
 
 export class StrengthDecorator extends AttackDecorator {
     _strength: number;

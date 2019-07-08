@@ -36,7 +36,7 @@ export const defaultState: StoreState = {
             {...CardDefinitions.get(CardName.Defend)!, id: 8},
             {...CardDefinitions.get(CardName.Inflame)!, id: 9},
             {...CardDefinitions.get(CardName.Uppercut)!, id: 10},
-            {...CardDefinitions.get(CardName.Defend)!, id: 11},
+            {...CardDefinitions.get(CardName.BlockTest)!, id: 11},
         ],
         discardPile: [],
         cardIdIncrementer: 500,
