@@ -9,7 +9,7 @@ export interface HandProps {
 }
 
 export class Hand extends PureComponent<HandProps> {
-    public render(): ReactNode {
+    render(): ReactNode {
         const {
             cardList,
             playCard,
@@ -18,13 +18,10 @@ export class Hand extends PureComponent<HandProps> {
         return (
             <div className="hand">
                 {
-                    cardList.map( card => {
+                    cardList.map( (card, index) => {
                         return (<CardComponent
-                            title={card.title}
-                            type={card.type}
-                            description={card.description}
-                            castList={card.castList}
-                            energyCost={card.energyCost}
+                            key={card.id}
+                            card={card}
                             playCard={playCard}
                         />)
                     })

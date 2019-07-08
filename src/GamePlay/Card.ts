@@ -29,6 +29,7 @@ export enum CardType {
 // Ultimately we should read these in from a json file at run time
 //
 export interface Card {
+    id: number;
     title: string;
     type: CardType;
     description: string;
@@ -48,6 +49,7 @@ export enum CardName {
  */
 export const CardDefinitions = new Map<CardName, Card>([
     [CardName.Strike, {
+        id: 0,
         title: "Strike",
         type: CardType.Attack,
         description: "I attack you",
@@ -59,6 +61,7 @@ export const CardDefinitions = new Map<CardName, Card>([
         energyCost: 1,
     }],
     [CardName.Defend, {
+        id: 0,
         title: "Defend",
         type: CardType.Skill,
         description: "I block me",
@@ -70,6 +73,7 @@ export const CardDefinitions = new Map<CardName, Card>([
         energyCost: 1,
     }],
     [CardName.Inflame, {
+        id: 0,
         title: "Inflame",
         type: CardType.Skill,
         description: "Gain strength",
@@ -81,6 +85,7 @@ export const CardDefinitions = new Map<CardName, Card>([
         energyCost: 1,
     }],
     [CardName.Uppercut, {
+        id: 0,
         title: "Uppercut",
         type: CardType.Skill,
         description: "Deals damage and applies weak to the target",

@@ -7,7 +7,7 @@ export interface EnergyProps {
 }
 
 export class Energy extends PureComponent<EnergyProps> {
-    public render(): ReactNode {
+    render(): ReactNode {
         const {
             energy,
             maxEnergy,

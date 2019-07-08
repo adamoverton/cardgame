@@ -1,8 +1,7 @@
-import  * as Actions from 'src/actions/GameActions';
+import * as Actions from 'src/actions/GameActions';
 import { EffectDefinitions, EffectName, TargetType } from 'src/GamePlay/Effect';
 import { Cast, Card } from 'src/GamePlay/Card';
-import { Entity, StoreState, kHeroId } from 'src/types/StoreState';
-import { ThunkType } from 'src/actions/GameActions';
+import { Entity, StoreState, kHeroId, ThunkType } from 'src/types/StoreState';
 import randomInt from 'random-int';
 
 export function playCard(card: Card, sourceId: string, targetId: string): ThunkType {
@@ -66,6 +65,10 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
                 }
             }
         }
+
+        dispatch(Actions.DiscardCard.create({
+            card,
+        }));
     };
 };
 
@@ -78,6 +81,33 @@ export function startCombat(): ThunkType {
         }));
     };
 };
+
+export function drawCards(count: number): ThunkType {
+    return (dispatch, getState, extraArgument) => {
+        const state = getState();
+        const drawPileCount = state.battleCards.drawPile.length;
+        const discardPileCount = state.battleCards.discardPile.length;
+
+        // How many do we draw the first time
+        if (drawPileCount < count) {
+            // Draw all the available cards
+            dispatch(Actions.DrawCards.create({count: drawPileCount}));
+
+            // Count how many more I want
+            const remainingDrawCount = count - drawPileCount;
+
+            // Shuffle
+            dispatch(Actions.ShuffleDiscardPileIntoDrawPile.create({}));
+
+            // Draw as many of what I want as possible
+            dispatch(Actions.DrawCards.create({count: Math.min(remainingDrawCount, discardPileCount)}));
+        } else {
+            dispatch(Actions.DrawCards.create({count}));
+        }
+
+    }
+}
+
 
 export function startTurnUpkeep(entityId: string): ThunkType {
     return (dispatch, getState, extraArgument) => {
@@ -97,6 +127,8 @@ export function endTurn(): ThunkType {
         // Do end of hero turn upkeep
         //  
 
+        // Move hand to discard pile
+        dispatch(Actions.DiscardHand.create({}));
 
         // Go through each enemy and do their turn
         for (const enemy of getState().enemyList) {
@@ -108,6 +140,10 @@ export function endTurn(): ThunkType {
         dispatch(Actions.ResetEnergy.create({}));
 
         startTurnUpkeep(kHeroId)(dispatch, getState, extraArgument);
+
+        // Draw hero cards CONSIDER: whether enemies will do this and just play cards too
+        drawCards(5)(dispatch, getState, extraArgument);
+
     };
 };
 

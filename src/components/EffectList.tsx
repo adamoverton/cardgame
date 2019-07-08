@@ -8,7 +8,7 @@ export interface EffectListProps {
 
 export class EffectList extends PureComponent<EffectListProps> {
     
-    public render(): ReactNode {
+    render(): ReactNode {
         const {
             effectList,
         } = this.props;

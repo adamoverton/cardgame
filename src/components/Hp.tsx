@@ -7,7 +7,7 @@ export interface HpProps {
 }
 
 export class Hp extends PureComponent<HpProps> {
-    public render(): ReactNode {
+    render(): ReactNode {
         const {
             hp,
             maxHp,

@@ -1,5 +1,7 @@
 import { StatusEffect } from 'src/GamePlay/Effect';
 import { Card } from 'src/GamePlay/Card';
+import { ThunkAction } from 'redux-thunk';
+import { Action } from 'redoodle';
 
 export interface Entity {
     id: string;
@@ -22,6 +24,7 @@ export interface BattleCards {
     hand: Card[];
     discardPile: Card[];
     // exhaustPile: Card[];
+    cardIdIncrementer: number;
 }
 
 export interface StoreState {
@@ -33,3 +36,5 @@ export interface StoreState {
 }
 
 export const kHeroId = "hero";
+
+export type ThunkType = ThunkAction<void, StoreState, void, Action>;

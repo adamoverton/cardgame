@@ -2,9 +2,12 @@ import {StoreState, kHeroId, Entity} from 'src/types/StoreState';
 import * as Actions from 'src/actions/GameActions';
 import { TypedReducer } from 'redoodle';
 import { defaultState } from 'src/defaultState';
+import { buildDeckReducer } from './DeckReducer';
 
-export function createReducer() {
+export function createStoreReducer() {
     const builder = TypedReducer.builder<StoreState>();
+
+    buildDeckReducer(builder);
 
     builder.withHandler(Actions.AdjustHp.TYPE, (state, payload) => {
         /**
@@ -72,7 +75,7 @@ export function createReducer() {
 
         return newState;
     });
-    
+
     /**
      * Add a buff to the given target matching the given name with the given value. If the buff already exists, add the
      * given value to the existing buff

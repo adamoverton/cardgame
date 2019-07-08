@@ -1,7 +1,6 @@
 import  * as Actions from 'src/actions/GameActions';
 import { VulnerableDecorator, AttackStep, StrengthDecorator } from 'src/Thunks/Turn';
-import { ThunkType } from 'src/actions/GameActions';
-import { Entity } from 'src/types/StoreState';
+import { Entity, ThunkType } from 'src/types/StoreState';
 
 export enum Timing {
     Never, // For resetTiming

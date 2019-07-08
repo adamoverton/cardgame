@@ -1,7 +1,6 @@
 import { EffectName, StatusEffect } from 'src/GamePlay/Effect';
-import { StoreState } from 'src/types/StoreState';
-import { TypedAction, Action } from "redoodle";
-import { ThunkAction } from 'redux-thunk';
+import { TypedAction } from "redoodle";
+import { Card } from 'src/GamePlay/Card';
 
 export const AdjustHp = TypedAction.define("gameplay::adjustHp")<{ 
     targetEntityId: string;
@@ -43,5 +42,17 @@ export const RemoveEnemy  = TypedAction.define("gameplay::removeEnemy")<{
     id: string;
 }>();
 
-// TODO: Last any was supposed to be union of types...we don't have access to?
-export type ThunkType = ThunkAction<void, StoreState, void, Action>
+// Deck Actions
+export const DiscardHand = TypedAction.define("gameplay::discardHand")<{
+}>();
+
+export const DiscardCard = TypedAction.define("gameplay::discardCard")<{
+    card: Card;
+}>();
+
+export const DrawCards = TypedAction.define("gameplay::drawCards")<{
+    count: number;
+}>();
+
+export const ShuffleDiscardPileIntoDrawPile = TypedAction.define("gameplay::shuffleDiscardPileIntoDrawPile")<{
+}>();
