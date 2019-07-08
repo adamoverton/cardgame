@@ -38,7 +38,7 @@ export class CardComponent extends PureComponent<CardComponentProps> {
                 <div className="description">{description}</div>
                 <div className="castList">
                     {castList.map(cast => {
-                        return (<div>{cast.magnitude} {cast.effect}</div>)
+                        return (<div key={cast.effect}>{cast.magnitude} {cast.effect}</div>)
                     })}
                 </div>    
                 <div className="energyCost">{energyCost} Energy</div>

@@ -9,14 +9,14 @@ export interface GameStageProps {
 }
 
 class BaseGameStage extends PureComponent<GameStageProps> {
-    public render(): ReactNode {
+    render(): ReactNode {
         const {enemies} = this.props;
 
         return (
             <div className="gameStage">
-                <div className="heroList"><div className="player"></div></div>
-                <EnemyList enemies={enemies}></EnemyList>
-                <div className="enemies"></div>
+                <div className="heroList"><div className="player"/></div>
+                <EnemyList enemies={enemies}/>
+                <div className="enemies"/>
             </div>
         );
     }
