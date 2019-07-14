@@ -185,26 +185,20 @@ export function attack(attackCast: Cast, sourceId: string, targetId: string): Th
         const sourceEntity = getEntityById(sourceId, getState());
         const targetEntity = getEntityById(targetId, getState());
 
-        // loop through all the status and apply relevant decorators
-        // applyDecoratorsByType = () => {
-        // ...
         // loop through all status effects of the attack source and the attack target
         // (relics can also be a source of status effects)
         // ask them if they want to decorate the attack
         for (const statusEffect of sourceEntity.effectList) {
-            attackStep = EffectDefinitions.get(statusEffect.name)!.applyAttackDecorator(attackStep, statusEffect.magnitude);
+            attackStep = EffectDefinitions.get(statusEffect.name)!.applySourceAttackDecorator(attackStep, statusEffect);
         }
-        // }
 
         // loop through all the target's status' and apply them as well for attack
-        // TODO: We need to define some directionality of applying status effects because 
-        // of strength/weak (source) vs vulnerable/block (target)
-        // for (const statusEffect of getState().enemyList[0].effectList) {
-        //     attack = EffectDefinitions[statusEffect.name].applyAttackDecorator(attackStep);
-        // }
+        for (const statusEffect of targetEntity.effectList) {
+             attackStep = EffectDefinitions.get(statusEffect.name)!.applyTargetAttackDecorator(attackStep, statusEffect);
+        }
 
         // Calculate damage amounts
-        let incomingDamage = attackStep.getAttackPower();
+        const incomingDamage = attackStep.getAttackPower();
         let damageToFace = incomingDamage;
 
         // Consider block
@@ -220,7 +214,7 @@ export function attack(attackCast: Cast, sourceId: string, targetId: string): Th
             const blockAmountUsed = damageToFace > 0 ? blockEffect.magnitude : incomingDamage;
             dispatch(Actions.ApplyEffect.create({
                 effectName: EffectName.Block,
-                targetId: targetId,
+                targetId,
                 magnitude: -blockAmountUsed,
             }));
         }
@@ -284,5 +278,14 @@ export class StrengthDecorator extends AttackDecorator {
     }
     getAttackPower = (): number => {
         return this._inner.getAttackPower() + this._strength;
+    }
+}
+
+export class VulnerableDecorator extends AttackDecorator {
+    constructor(inner: AttackStep) {
+        super(inner);
+    }
+    getAttackPower = (): number => {
+        return this._inner.getAttackPower() * 1.5;
     }
 }

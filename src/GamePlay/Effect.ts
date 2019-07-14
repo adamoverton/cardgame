@@ -1,5 +1,5 @@
 import  * as Actions from 'src/actions/GameActions';
-import { AttackStep, StrengthDecorator } from 'src/Thunks/Turn';
+import { AttackStep, StrengthDecorator, VulnerableDecorator } from 'src/Thunks/Turn';
 import { Entity, kHeroId, ThunkType } from 'src/types/StoreState';
 
 export enum Timing {
@@ -34,7 +34,8 @@ export interface Effect {
 }
 
 export interface EffectDecorationProp extends Effect {
-    applyAttackDecorator?: (cast: AttackStep, magnitude: number) => AttackStep;
+    applySourceAttackDecorator?: (cast: AttackStep, statusEffect: StatusEffect) => AttackStep;
+    applyTargetAttackDecorator?: (cast: AttackStep, statusEffect: StatusEffect) => AttackStep;
     onStartTurnUpkeep?: (entity: Entity, statusEffect: StatusEffect) => ThunkType;
     autoDecrementAfterUpkeep?: boolean;
 }
@@ -46,15 +47,20 @@ export class EffectDecoration implements Effect {
     onStartTurnUpkeepProvided: (entity: Entity, statusEffect: StatusEffect) => ThunkType;
 
     constructor(props: EffectDecorationProp) {
-        this.title = this.title || props.title;
-        this.description = this.description || props.description;
-        this.applyAttackDecorator = props.applyAttackDecorator || this.applyAttackDecorator;
+        this.title = props.title || this.title;
+        this.description = props.description || this.description;
+        this.applySourceAttackDecorator = props.applySourceAttackDecorator || this.applySourceAttackDecorator;
+        this.applyTargetAttackDecorator = props.applyTargetAttackDecorator || this.applyTargetAttackDecorator;
         this.onStartTurnUpkeepProvided = props.onStartTurnUpkeep || this.onUpkeepBlank;
         this.autoDecrementAfterUpkeep = props.autoDecrementAfterUpkeep || this.autoDecrementAfterUpkeep;
     }
 
 
-    applyAttackDecorator = (cast: AttackStep, magnitude: number): AttackStep  => {
+    applySourceAttackDecorator = (cast: AttackStep, statusEffect: StatusEffect): AttackStep => {
+        return cast;
+    }
+
+    applyTargetAttackDecorator = (cast: AttackStep, statusEffect: StatusEffect): AttackStep => {
         return cast;
     }
 
@@ -116,13 +122,13 @@ export const EffectDefinitions = new Map<EffectName, EffectDecoration> ([
     [EffectName.Vulnerable, new EffectDecoration({
         title: 'Vulnerable',
         description: 'Vulnerable entity takes 50% more attack damage for __ turns',
-        // applyAttackDecorator: (cast: AttackStep, magnitude: number): AttackStep  => new VulnerableDecorator(cast),
+        applyTargetAttackDecorator: (cast: AttackStep, statusEffect: StatusEffect): AttackStep  => new VulnerableDecorator(cast),
         autoDecrementAfterUpkeep: true,
     })],
     [EffectName.Strength, new EffectDecoration({
         title: 'Strength',
         description: 'Gain 2 strength',
-        applyAttackDecorator: (cast: AttackStep, magnitude: number): AttackStep  => new StrengthDecorator(cast, magnitude),
+        applySourceAttackDecorator: (cast: AttackStep, statusEffect: StatusEffect): AttackStep  => new StrengthDecorator(cast, statusEffect.magnitude),
     })],
     [EffectName.Frail, new EffectDecoration({
         title: 'Frail',

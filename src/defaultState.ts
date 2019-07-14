@@ -46,7 +46,12 @@ export const defaultState: StoreState = {
             id: 'enemy1',
             hp: 10,
             maxHp: 50,
-            effectList: [],
+            effectList: [
+                {
+                    name: EffectName.Vulnerable,
+                    magnitude: 3,
+                },
+            ],
         },
         {
             id: 'enemy2',
