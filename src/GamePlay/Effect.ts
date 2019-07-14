@@ -1,5 +1,5 @@
 import  * as Actions from 'src/actions/GameActions';
-import { AttackStep, StrengthDecorator, VulnerableDecorator } from 'src/Thunks/Turn';
+import { AttackStep, StrengthDecorator, VulnerableDecorator, WeakDecorator } from 'src/Thunks/Turn';
 import { Entity, kHeroId, ThunkType } from 'src/types/StoreState';
 
 export enum Timing {
@@ -31,30 +31,45 @@ export interface Effect {
     title: string;
     description: string;
     // image: string; // the image to show below the character
-}
-
-export interface EffectDecorationProp extends Effect {
+    decoratorPriority?: number;
     applySourceAttackDecorator?: (cast: AttackStep, statusEffect: StatusEffect) => AttackStep;
     applyTargetAttackDecorator?: (cast: AttackStep, statusEffect: StatusEffect) => AttackStep;
     onStartTurnUpkeep?: (entity: Entity, statusEffect: StatusEffect) => ThunkType;
     autoDecrementAfterUpkeep?: boolean;
 }
 
-export class EffectDecoration implements Effect {
+export class StatusEffectWithDefinition {
+    statusEffect: StatusEffect;
+    effectDefinition: EffectImpl;
+}
+
+export const statusEffectListToSortedEffectList = (statusEffectList: StatusEffect[]): StatusEffectWithDefinition[] => {
+    let effectTuple: StatusEffectWithDefinition[] = [];
+    for (const statusEffect of statusEffectList) {
+        effectTuple.push({
+            statusEffect,
+            effectDefinition: EffectDefinitions.get(statusEffect.name)!,
+        });
+    }
+    return effectTuple.sort((tuple1, tuple2) => (tuple1.effectDefinition.decoratorPriority < tuple2.effectDefinition.decoratorPriority) ? -1 : 1);
+}
+
+export class EffectImpl implements Effect {
     title = "";
     description = "";
+    decoratorPriority = 0;
     autoDecrementAfterUpkeep = false;
     onStartTurnUpkeepProvided: (entity: Entity, statusEffect: StatusEffect) => ThunkType;
 
-    constructor(props: EffectDecorationProp) {
+    constructor(props: Effect) {
         this.title = props.title || this.title;
         this.description = props.description || this.description;
+        this.decoratorPriority = props.decoratorPriority || this.decoratorPriority;
         this.applySourceAttackDecorator = props.applySourceAttackDecorator || this.applySourceAttackDecorator;
         this.applyTargetAttackDecorator = props.applyTargetAttackDecorator || this.applyTargetAttackDecorator;
         this.onStartTurnUpkeepProvided = props.onStartTurnUpkeep || this.onUpkeepBlank;
         this.autoDecrementAfterUpkeep = props.autoDecrementAfterUpkeep || this.autoDecrementAfterUpkeep;
     }
-
 
     applySourceAttackDecorator = (cast: AttackStep, statusEffect: StatusEffect): AttackStep => {
         return cast;
@@ -91,12 +106,12 @@ export class EffectDecoration implements Effect {
 // 
 // We should list a class associated with each effect that knows how to process it
 //
-export const EffectDefinitions = new Map<EffectName, EffectDecoration> ([
-    [EffectName.Attack, new EffectDecoration({
+export const EffectDefinitions = new Map<EffectName, EffectImpl> ([
+    [EffectName.Attack, new EffectImpl({
         title: 'Attack',
         description: 'Deal damage',
     })],
-    [EffectName.BerserkEnergy, new EffectDecoration({
+    [EffectName.BerserkEnergy, new EffectImpl({
         title: 'Berserk Energy',
         description: 'Energy at start of turn',
         onStartTurnUpkeep: (entity: Entity, statusEffect: StatusEffect): ThunkType => {
@@ -107,7 +122,7 @@ export const EffectDefinitions = new Map<EffectName, EffectDecoration> ([
             }
         }
     })],
-    [EffectName.Block, new EffectDecoration({
+    [EffectName.Block, new EffectImpl({
         title: 'Block',
         description: 'Reduce incoming damage by this amount',
         onStartTurnUpkeep: (entity: Entity, statusEffect: StatusEffect): ThunkType => {
@@ -119,25 +134,27 @@ export const EffectDefinitions = new Map<EffectName, EffectDecoration> ([
             }
         }
     })],
-    [EffectName.Vulnerable, new EffectDecoration({
+    [EffectName.Vulnerable, new EffectImpl({
         title: 'Vulnerable',
         description: 'Vulnerable entity takes 50% more attack damage for __ turns',
         applyTargetAttackDecorator: (cast: AttackStep, statusEffect: StatusEffect): AttackStep  => new VulnerableDecorator(cast),
         autoDecrementAfterUpkeep: true,
     })],
-    [EffectName.Strength, new EffectDecoration({
+    [EffectName.Strength, new EffectImpl({
         title: 'Strength',
         description: 'Gain 2 strength',
         applySourceAttackDecorator: (cast: AttackStep, statusEffect: StatusEffect): AttackStep  => new StrengthDecorator(cast, statusEffect.magnitude),
     })],
-    [EffectName.Frail, new EffectDecoration({
+    [EffectName.Frail, new EffectImpl({
         title: 'Frail',
         description: 'Reduces the amount of block points gained by 25%',
         autoDecrementAfterUpkeep: true,
     })],
-    [EffectName.Weak, new EffectDecoration({
+    [EffectName.Weak, new EffectImpl({
         title: 'Weak',
         description: 'Reduces the amount of damage given by a 25%',
+        decoratorPriority: 1,
+        applySourceAttackDecorator: (cast: AttackStep, statusEffect: StatusEffect): AttackStep => new WeakDecorator(cast),
         autoDecrementAfterUpkeep: true,
     })],
 ]);

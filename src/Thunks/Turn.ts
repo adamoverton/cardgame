@@ -1,5 +1,5 @@
 import * as Actions from 'src/actions/GameActions';
-import { EffectDefinitions, EffectName, TargetType } from 'src/GamePlay/Effect';
+import { EffectDefinitions, EffectName, TargetType, statusEffectListToSortedEffectList } from 'src/GamePlay/Effect';
 import { Cast, Card } from 'src/GamePlay/Card';
 import { Entity, StoreState, kHeroId, ThunkType } from 'src/types/StoreState';
 import randomInt from 'random-int';
@@ -188,13 +188,15 @@ export function attack(attackCast: Cast, sourceId: string, targetId: string): Th
         // loop through all status effects of the attack source and the attack target
         // (relics can also be a source of status effects)
         // ask them if they want to decorate the attack
-        for (const statusEffect of sourceEntity.effectList) {
-            attackStep = EffectDefinitions.get(statusEffect.name)!.applySourceAttackDecorator(attackStep, statusEffect);
-        }
 
+        const sourceEffectTuple = statusEffectListToSortedEffectList(sourceEntity.effectList);
+        for (const effectTuple of sourceEffectTuple) {
+            attackStep = effectTuple.effectDefinition.applySourceAttackDecorator(attackStep, effectTuple.statusEffect);
+        }
         // loop through all the target's status' and apply them as well for attack
-        for (const statusEffect of targetEntity.effectList) {
-             attackStep = EffectDefinitions.get(statusEffect.name)!.applyTargetAttackDecorator(attackStep, statusEffect);
+        const targetEffectTuple = statusEffectListToSortedEffectList(targetEntity.effectList);
+        for (const effectTuple of targetEffectTuple) {
+             attackStep = effectTuple.effectDefinition.applyTargetAttackDecorator(attackStep, effectTuple.statusEffect);
         }
 
         // Calculate damage amounts
@@ -286,6 +288,15 @@ export class VulnerableDecorator extends AttackDecorator {
         super(inner);
     }
     getAttackPower = (): number => {
-        return this._inner.getAttackPower() * 1.5;
+        return Math.round(this._inner.getAttackPower() * 1.5);
+    }
+}
+
+export class WeakDecorator extends AttackDecorator {
+    constructor(inner: AttackStep) {
+        super(inner);
+    }
+    getAttackPower = (): number => {
+        return Math.round(this._inner.getAttackPower() * 0.75);
     }
 }

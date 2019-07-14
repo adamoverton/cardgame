@@ -18,6 +18,10 @@ export const defaultState: StoreState = {
                 name: EffectName.Vulnerable,
                 magnitude: 2,
             },
+            {
+                name: EffectName.Weak,
+                magnitude: 2,
+            },
         ],
     },
     heroDeck: [],
