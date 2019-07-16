@@ -12,11 +12,11 @@ export class EffectList extends PureComponent<EffectListProps> {
         const effectTupleList = statusEffectListToSortedEffectList(this.props.effectList);
         return (
             <div className="effectList">
-                {effectTupleList.map(element => {
-                    return (<> {element.statusEffect.magnitude} {element.statusEffect.name} </>)
-                    })
-                }
+                {effectTupleList.map(element => this.renderEffect(element.statusEffect))}
             </div>
         );
     }
+    private renderEffect = (effect: StatusEffect): ReactNode => {
+        return <div>{effect.name}: {effect.magnitude}</div>
+    };
 }

@@ -26,22 +26,45 @@
 }
 
 .enemyList {
-    width: 30%;
+    display: block;
+    position: absolute;
+    right: 0px;
+    align-items: right;
+    margin: 5px;
 }
 
-.enemy {
-    margin: 20px 0;
+.entity {
+    width: 250px;
+    height: 100px;
+    padding: 20px 15px;
+    border: 1px solid rgb(36, 27, 10);
+    background-color: pink;
+    box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.3);
+    font-size: 12px;
+    margin: 5px 5px;
+}
+
+.hero {
+    background-color: lightgreen;
+    margin: 10px;
+}
+
+.entity .highlight{
+    margin: 0 auto;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .hand {
     display: flex;
+    align-self: center;
     align-items: center;
-    margin: 10px;
+    margin: 5px;
 }
 
 .card {
-    width: 200px;
-    height: 300px;
+    width: 150px;
+    height: 225px;
     padding: 20px 15px;
     border: 1px solid rgb(36, 27, 10);
     background-color: wheat;
@@ -65,9 +88,11 @@
 }
 
 .endTurn {
-    padding: 20px;
-    width: 200px;
-    height: 150px;
+    padding: 10px;
+    border: 1px solid rgb(36, 27, 10);
+    width: 75px;
+    height: 20px;
     background: skyblue;
     cursor: pointer;
+    margin: 10px 10px;
 }

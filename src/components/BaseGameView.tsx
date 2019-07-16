@@ -3,7 +3,6 @@ import {PureComponent, ReactNode} from 'react';
 import { GameStage } from 'src/containers/GameStage';
 import { Hp } from 'src/components/Hp';
 import { StatusEffect } from 'src/GamePlay/Effect';
-import { EffectList } from 'src/components/EffectList';
 import { Energy } from 'src/components/Energy';
 import { Card } from 'src/GamePlay/Card';
 import { Hand } from 'src/components/Hand';
@@ -32,7 +31,6 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
             maxHp,
             energy,
             maxEnergy,
-            effectList,
             playCard,
             endTurn,
             hand,
@@ -42,18 +40,18 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
             <div className="gameView">
                 <Hp hp={hp} maxHp={maxHp}/>
                 <Energy energy={energy} maxEnergy={maxEnergy}/>
-                <EffectList effectList={effectList}/>
                 <GameStage />
-                <Hand
-                    playCard={playCard}
-                    cardList={hand}
-                />
                 <div
                     className="endTurn"
                     onClick={endTurn}
                 >
                     End Turn
                 </div>
+                <Hand
+                    playCard={playCard}
+                    cardList={hand}
+                />
+
             </div>
         );
     }
