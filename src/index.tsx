@@ -2,8 +2,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import registerServiceWorker from 'src/registerServiceWorker';
 import { Provider } from 'react-redux';
-import { GameView } from 'src/containers/GameView';
-import { configureStore } from 'src/configureStore';
+import { configureStore } from "src/redux/configureStore";
+import { GameView } from "src/components/GameView";
 
 const store = configureStore();
 

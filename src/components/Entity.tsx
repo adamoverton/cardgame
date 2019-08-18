@@ -1,8 +1,7 @@
 import * as React from 'react';
-import {Component, ReactNode} from 'react';
-import { Entity } from 'src/types/StoreState';
-
+import { Component, ReactNode } from 'react';
 import { EffectList } from './EffectList';
+import { Entity } from "src/models/Entity";
 
 export interface EntityProps {
     entity: Entity;

@@ -1,10 +1,12 @@
-import { StoreState } from 'src/types/StoreState';
-import { TypedReducer } from 'redoodle';
-import * as Actions from 'src/actions/GameActions';
+import { Reducer, TypedReducer } from 'redoodle';
+import * as Actions from 'src/redux/DeckActions';
+import { DeckStore } from "src/redux/DeckTypes";
 
-export function buildDeckReducer(builder: TypedReducer.Builder<StoreState>) {
+export function createDeckReducer(): Reducer<DeckStore> {
+    const builder = TypedReducer.builder<DeckStore>();
+
     builder.withHandler(Actions.DiscardHand.TYPE, (state, payload) => {
-        const newState = {
+        const newState: DeckStore = {
             ...state,
             battleCards: {
                 ...state.battleCards,
@@ -16,8 +18,8 @@ export function buildDeckReducer(builder: TypedReducer.Builder<StoreState>) {
         return newState;
     });
 
-    builder.withHandler(Actions.DiscardCard.TYPE, (state, payload) => {
-        const newState = {
+    builder.withHandler(Actions.DiscardCard.TYPE, (state: DeckStore, payload) => {
+        const newState: DeckStore = {
             ...state,
             battleCards: {
                 ...state.battleCards,
@@ -58,4 +60,6 @@ export function buildDeckReducer(builder: TypedReducer.Builder<StoreState>) {
 
         return newState;
     });
+
+    return builder.build();
 }

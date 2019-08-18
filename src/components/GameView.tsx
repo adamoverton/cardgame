@@ -1,11 +1,15 @@
-import * as React from 'react';
-import {PureComponent, ReactNode} from 'react';
-import { GameStage } from 'src/containers/GameStage';
-import { Hp } from 'src/components/Hp';
-import { StatusEffect } from 'src/GamePlay/Effect';
-import { Energy } from 'src/components/Energy';
-import { Card } from 'src/GamePlay/Card';
-import { Hand } from 'src/components/Hand';
+import { connect } from 'react-redux';
+import { StoreState } from 'src/redux/StoreState';
+import 'src/components/GameView.scss';
+import { endTurn, playCard } from 'src/redux/MiscThunks';
+import { StatusEffect } from "src/models/Effect";
+import { Card } from "src/models/Card";
+import { PureComponent, ReactNode } from "react";
+import { Hp } from "src/components/Hp";
+import { Energy } from "src/components/Energy";
+import { GameStage } from "src/components/GameStage";
+import { Hand } from "src/components/Hand";
+import * as React from "react";
 
 export interface BaseGameViewState {
     hp: number;
@@ -24,7 +28,7 @@ export interface BaseGameViewDispatch {
 type BaseGameViewProps  = BaseGameViewState & BaseGameViewDispatch
 
 export class BaseGameView extends PureComponent<BaseGameViewProps> {
-    
+
     render(): ReactNode {
         const {
             hp,
@@ -56,3 +60,21 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
         );
     }
 }
+
+export const mapStateToProps = ({entity: {hero}, deck: {battleCards}}: StoreState) => {
+    return {
+        hp: hero.hp,
+        maxHp: hero.maxHp,
+        energy: hero.energy,
+        maxEnergy: hero.maxEnergy,
+        effectList: hero.effectList,
+        hand: battleCards.hand,
+    };
+};
+
+export const mapDispatchToProps = {
+    playCard,
+    endTurn,
+};
+
+export const GameView = connect<BaseGameViewState, BaseGameViewDispatch>(mapStateToProps, mapDispatchToProps)(BaseGameView);

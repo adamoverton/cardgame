@@ -1,14 +1,13 @@
-import { EffectName, StatusEffect } from 'src/GamePlay/Effect';
 import { TypedAction } from "redoodle";
-import { Card } from 'src/GamePlay/Card';
+import { EffectName, StatusEffect } from "src/models/Effect";
 
-export const AdjustHp = TypedAction.define("gameplay::adjustHp")<{ 
+export const AdjustHp = TypedAction.define("gameplay::adjustHp")<{
     targetEntityId: string;
     hp: number;
 }>();
 
 export const AdjustEnergy = TypedAction.define("gameplay::adjustEnergy")<{
-     energy: number; 
+    energy: number;
 }>();
 
 export const SetEnergy = TypedAction.define("gameplay::setEnergy")<{
@@ -40,19 +39,4 @@ export const AddEnemy  = TypedAction.define("gameplay::addEnemy")<{
 
 export const RemoveEnemy  = TypedAction.define("gameplay::removeEnemy")<{
     id: string;
-}>();
-
-// Deck Actions
-export const DiscardHand = TypedAction.define("gameplay::discardHand")<{
-}>();
-
-export const DiscardCard = TypedAction.define("gameplay::discardCard")<{
-    card: Card;
-}>();
-
-export const DrawCards = TypedAction.define("gameplay::drawCards")<{
-    count: number;
-}>();
-
-export const ShuffleDiscardPileIntoDrawPile = TypedAction.define("gameplay::shuffleDiscardPileIntoDrawPile")<{
 }>();

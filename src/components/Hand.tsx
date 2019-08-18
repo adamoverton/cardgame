@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {PureComponent, ReactNode} from 'react';
-import { Card } from 'src/GamePlay/Card';
+import { Card } from 'src/models/Card';
 import { CardComponent } from 'src/components/CardComponent';
 
 export interface HandProps {

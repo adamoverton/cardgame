@@ -1,13 +1,10 @@
-import {StoreState, kHeroId, Entity} from 'src/types/StoreState';
-import * as Actions from 'src/actions/GameActions';
-import { TypedReducer } from 'redoodle';
-import { defaultState } from 'src/defaultState';
-import { buildDeckReducer } from './DeckReducer';
+import { Reducer, TypedReducer } from "redoodle";
+import * as Actions from 'src/redux/EntityActions';
+import { Entity, kHeroId } from "src/models/Entity";
+import { EntityStore } from "src/redux/EntityTypes";
 
-export function createStoreReducer() {
-    const builder = TypedReducer.builder<StoreState>();
-
-    buildDeckReducer(builder);
+export function createEntityReducer(): Reducer<EntityStore> {
+    const builder = TypedReducer.builder<EntityStore>();
 
     builder.withHandler(Actions.AdjustHp.TYPE, (state, payload) => {
         /**
@@ -15,7 +12,8 @@ export function createStoreReducer() {
          */
         const newState = {
             ...state,
-        }
+        };
+
         if (payload.targetEntityId === kHeroId) {
             newState.hero = {
                 ...state.hero,
@@ -117,7 +115,7 @@ export function createStoreReducer() {
             existingEffect.magnitude += payload.magnitude;
             if (existingEffect.magnitude === 0) {
                 target.effectList = target.effectList.filter(effect => effect.name !== payload.effectName);
-            }            
+            }
         } else {
             target.effectList.push({
                 name: payload.effectName,
@@ -198,13 +196,5 @@ export function createStoreReducer() {
         }
     });
 
-    /**
-     * This default case is necessary for everything to compile. We should never get here.
-     */
-    builder.withDefaultHandler(state => {
-        console.error("You somehow got to the default reducer. This is probably an error!");
-        return state !== undefined ? state : defaultState;
-    });
-
     return builder.build();
-};
+}

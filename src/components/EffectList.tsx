@@ -1,6 +1,7 @@
-import { StatusEffect, statusEffectListToSortedEffectList } from 'src/GamePlay/Effect';
+import { statusEffectListToSortedEffectList } from 'src/gameLogic/EffectDefinitions';
 import { PureComponent, ReactNode } from 'react';
 import * as React from 'react';
+import { StatusEffect } from "src/models/Effect";
 
 export interface EffectListProps {
     effectList: StatusEffect[];

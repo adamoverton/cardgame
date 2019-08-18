@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {PureComponent, ReactNode} from 'react';
-import { Card} from 'src/GamePlay/Card';
-import { kHeroId } from 'src/types/StoreState';
+import { PureComponent, ReactNode } from 'react';
+import { Card } from 'src/models/Card';
+import { kHeroId } from "src/models/Entity";
 
 export interface CardComponentProps {
     card: Card;
@@ -11,7 +11,7 @@ export interface CardComponentProps {
 export class CardComponent extends PureComponent<CardComponentProps> {
     onclick = () => {
         this.props.playCard(this.props.card, kHeroId, "enemy1");
-    }
+    };
 
     render(): ReactNode {
         const {

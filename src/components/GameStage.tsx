@@ -1,9 +1,10 @@
 import * as React from 'react';
-import {PureComponent, ReactNode} from 'react';
-import { Enemy, StoreState, Entity } from 'src/types/StoreState';
+import { PureComponent, ReactNode } from 'react';
+import { StoreState } from 'src/redux/StoreState';
 import { EnemyList } from 'src/components/EnemyList';
 import { connect } from 'react-redux';
 import { PureEntity } from 'src/components/Entity';
+import { Enemy, Entity } from "src/models/Entity";
 
 export interface GameStageProps {
     hero: Entity;
@@ -23,7 +24,7 @@ class BaseGameStage extends PureComponent<GameStageProps> {
     }
 }
 
-export const mapStateToProps = ({hero, enemyList}: StoreState) => {
+export const mapStateToProps = ({entity: {hero, enemyList}}: StoreState) => {
     return {
         hero,
         enemies: enemyList,

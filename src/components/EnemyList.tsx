@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {PureComponent, ReactNode} from 'react';
-import { Enemy } from 'src/types/StoreState';
+import { PureComponent, ReactNode } from 'react';
 import { PureEntity } from './Entity';
+import { Enemy } from "src/models/Entity";
 
 export interface EnemyListProps {
     enemies: Enemy[];
