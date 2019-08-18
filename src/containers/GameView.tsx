@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { BaseGameView, BaseGameViewDispatch, BaseGameViewState } from 'src/components/BaseGameView';
 import { StoreState } from 'src/types/StoreState';
-import 'src/components/GameView.css';
+import 'src/components/GameView.scss';
 import { endTurn, playCard } from 'src/Thunks/Turn';
 
 export const mapStateToProps = ({hero, battleCards}: StoreState) => {
