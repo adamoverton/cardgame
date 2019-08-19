@@ -44,17 +44,21 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
             <div className="gameView">
                 <Hp hp={hp} maxHp={maxHp}/>
                 <Energy energy={energy} maxEnergy={maxEnergy}/>
-                <GameStage />
-                <div
-                    className="endTurn"
-                    onClick={endTurn}
-                >
-                    End Turn
+                <div className="arena">
+                    <GameStage />
+                    <div className="foreground">
+                        <Hand
+                            playCard={playCard}
+                            cardList={hand}
+                        />
+                        <div
+                            className="endTurn"
+                            onClick={endTurn}
+                        >
+                            End Turn
+                        </div>
+                    </div>
                 </div>
-                <Hand
-                    playCard={playCard}
-                    cardList={hand}
-                />
 
             </div>
         );

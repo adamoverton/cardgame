@@ -5,6 +5,7 @@ import { EnemyList } from 'src/components/EnemyList';
 import { connect } from 'react-redux';
 import { PureEntity } from 'src/components/Entity';
 import { Enemy, Entity } from "src/models/Entity";
+import 'src/components/GameStage.scss';
 
 export interface GameStageProps {
     hero: Entity;

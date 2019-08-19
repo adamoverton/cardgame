@@ -1,0 +1,36 @@
+@import "variables";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  overflow: hidden;
+  background-color: $arenaBackgroundColor;
+}
+
+.root {
+  transform-origin: left top;
+  overflow: hidden; // hide overflowing elements for when the root's aspect ratio gets locked
+  //height: 850px;
+  //width: 1024px;
+}
+
+//.root {
+//  width: 100vw;
+//  height: 56.25vw; // height:width ratio = 9/16 = .5625
+//  background: pink;
+//  max-height: 100vh;
+//  max-width: 177.78vh; // 16/9 = 1.778
+//  position: absolute;
+//  top:0;bottom:0; /* vertical center */
+//  left:0;right:0; /* horizontal center */
+//}
