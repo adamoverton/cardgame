@@ -80,7 +80,7 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
             }
         }
         dispatch(EntityActions.DeckAction.create({ 
-            entityId: kHeroId,
+            entityId: sourceId,
             deckAction: DeckActions.DiscardCard.create({
                 card,
             }),
