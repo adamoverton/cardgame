@@ -10,12 +10,12 @@ export interface BattleCards {
 }
 
 export interface DeckStore {
-    heroDeck: Card[];
-    battleCards: BattleCards;
+    deck: Card[];               // These are the cards regardless of current combat
+    battleCards: BattleCards;   // This is the active deck that often gets morphed as a battle ensues
 }
 
-export const defaultDeckStore: DeckStore = {
-    heroDeck: [],
+export const defaultHeroDeckStore: DeckStore = {
+    deck: [],
     battleCards: {
         drawPile: [
             {...CardDefinitions.get(CardName.Defend)!, id: 0},
@@ -32,6 +32,20 @@ export const defaultDeckStore: DeckStore = {
             {...CardDefinitions.get(CardName.Inflame)!, id: 9},
             {...CardDefinitions.get(CardName.Uppercut)!, id: 10},
             {...CardDefinitions.get(CardName.BlockTest)!, id: 11},
+        ],
+        discardPile: [],
+        cardIdIncrementer: 500,
+    },
+};
+
+export const defaultEnemyDeckStore: DeckStore = {
+    deck: [],
+    battleCards: {
+        drawPile: [
+            {...CardDefinitions.get(CardName.Strike)!, id: 6},
+        ],
+        hand: [
+            {...CardDefinitions.get(CardName.Strike)!, id: 7},
         ],
         discardPile: [],
         cardIdIncrementer: 500,

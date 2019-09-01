@@ -4,7 +4,6 @@ import { defaultState } from "src/redux/defaultState";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { StoreState } from "src/redux/StoreState";
 import { combineReducers } from "redoodle";
-import { createDeckReducer } from "src/redux/DeckReducer";
 import { createEntityReducer } from "src/redux/EntityReducer";
 
 const composedEnhancers: StoreEnhancer = composeWithDevTools(
@@ -13,7 +12,6 @@ const composedEnhancers: StoreEnhancer = composeWithDevTools(
 
 const createStoreReducer = () => {
     return combineReducers<StoreState>({
-        deck: createDeckReducer(),
         entity: createEntityReducer(),
     });
 };

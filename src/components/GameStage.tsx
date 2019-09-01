@@ -4,12 +4,12 @@ import { StoreState } from 'src/redux/StoreState';
 import { EnemyList } from 'src/components/EnemyList';
 import { connect } from 'react-redux';
 import { PureEntity } from 'src/components/Entity';
-import { Enemy, Entity } from "src/models/Entity";
+import { Entity, kHeroId } from "src/models/Entity";
 import 'src/components/GameStage.scss';
 
 export interface GameStageProps {
     hero: Entity;
-    enemies: Enemy[];
+    enemies: Entity[];
 }
 
 class BaseGameStage extends PureComponent<GameStageProps> {
@@ -25,10 +25,12 @@ class BaseGameStage extends PureComponent<GameStageProps> {
     }
 }
 
-export const mapStateToProps = ({entity: {hero, enemyList}}: StoreState) => {
+export const mapStateToProps = ({entity: { entityList: entityList}}: StoreState) => {
+    const enemies = {...entityList};
+    delete enemies[kHeroId];
     return {
-        hero,
-        enemies: enemyList,
+        hero: entityList[kHeroId],
+        enemies: Object.values(enemies),
     };
 };
 

@@ -1,10 +1,28 @@
 import { Reducer, TypedReducer } from "redoodle";
 import * as Actions from 'src/redux/EntityActions';
-import { Entity, kHeroId } from "src/models/Entity";
+import { kHeroId } from "src/models/Entity";
 import { EntityStore } from "src/redux/EntityTypes";
+import { createDeckReducer } from 'src/redux/DeckReducer';
+import { defaultEnemyDeckStore } from 'src/redux/DeckTypes';
 
 export function createEntityReducer(): Reducer<EntityStore> {
+    const deckReducer = createDeckReducer();
     const builder = TypedReducer.builder<EntityStore>();
+
+    builder.withHandler(Actions.DeckAction.TYPE, (state, payload) => {
+        const newState = {
+            ...state,
+            entityList: {...state.entityList},
+        }
+
+        // make a new copy of the entity we want to update, and then give it the reduced deck
+        newState.entityList[payload.entityId] = {
+            ...state.entityList[payload.entityId],
+            deck: deckReducer(state.entityList[payload.entityId].deck, payload.deckAction),
+        };
+
+        return newState;
+    });
 
     builder.withHandler(Actions.AdjustHp.TYPE, (state, payload) => {
         /**
@@ -12,28 +30,16 @@ export function createEntityReducer(): Reducer<EntityStore> {
          */
         const newState = {
             ...state,
+            entityList: {
+                ...state.entityList,
+            }
         };
 
-        if (payload.targetEntityId === kHeroId) {
-            newState.hero = {
-                ...state.hero,
-                hp: state.hero.hp + payload.hp,
-            };
-        } else {
-            let found = false;
-            const newEnemyList = newState.enemyList.map(enemy => {
-                if (enemy.id === payload.targetEntityId) {
-                    enemy.hp += payload.hp;
-                    found = true;
-                }
-                return enemy;
-            });
-
-            if (!found) {
-                console.warn(`Tried to adjust hp of ${payload.targetEntityId} but could not find corresponding entity`);
-            }
-            newState.enemyList = newEnemyList;
-        }
+        const newEntityList = newState.entityList;
+        newEntityList[payload.entityId] = {
+            ...newEntityList[payload.entityId],
+            hp: newEntityList[payload.entityId].hp + payload.hp,
+        };
 
         return newState;
     });
@@ -41,10 +47,15 @@ export function createEntityReducer(): Reducer<EntityStore> {
     builder.withHandler(Actions.AdjustEnergy.TYPE, (state, payload) => {
         const newState = {
             ...state,
-            hero: {
-                ...state.hero,
-                energy: state.hero.energy + payload.energy,
-            },
+            entityList: {
+                ...state.entityList,
+            }
+        };
+
+        const newEntityList = newState.entityList;
+        newEntityList[payload.entityId] = {
+            ...newEntityList[payload.entityId],
+            energy: newEntityList[payload.entityId].energy + payload.energy,
         };
 
         return newState;
@@ -53,10 +64,15 @@ export function createEntityReducer(): Reducer<EntityStore> {
     builder.withHandler(Actions.SetEnergy.TYPE, (state, payload) => {
         const newState = {
             ...state,
-            hero: {
-                ...state.hero,
-                energy: payload.energy,
-            },
+            entityList: {
+                ...state.entityList,
+            }
+        };
+
+        const newEntityList = newState.entityList;
+        newEntityList[payload.entityId] = {
+            ...newEntityList[payload.entityId],
+            energy: payload.energy,
         };
 
         return newState;
@@ -65,10 +81,15 @@ export function createEntityReducer(): Reducer<EntityStore> {
     builder.withHandler(Actions.ResetEnergy.TYPE, (state, payload) => {
         const newState = {
             ...state,
-            hero: {
-                ...state.hero,
-                energy: state.hero.maxEnergy,
+            entityList: {
+                ...state.entityList,
             }
+        };
+
+        const newEntityList = newState.entityList;
+        newEntityList[payload.entityId] = {
+            ...newEntityList[payload.entityId],
+            energy: newEntityList[payload.entityId].maxEnergy,
         };
 
         return newState;
@@ -79,31 +100,20 @@ export function createEntityReducer(): Reducer<EntityStore> {
      * given value to the existing buff
      */
     builder.withHandler(Actions.ApplyEffect.TYPE, (state, payload) => {
-        // Create a new state with both a new hero and enemy list, because we may be targeting either of them
         const newState = {
             ...state,
-            hero: {
-                ...state.hero,
-            },
-            enemyList: [
-                ...state.enemyList,
-            ]
+            entityList: {...state.entityList},
+        }
+
+        // make a new copy of the entity we want to update, and then give it the reduced deck
+        newState.entityList[payload.entityId] = {
+            ...state.entityList[payload.entityId],
         };
-        let target: Entity | undefined;
 
-        // Find the target in the new state
-        if (payload.targetId === "hero") {
-            target = newState.hero;
-        } else {
-            // We must be targeting an enemy if we aren't targeting the hero
+        const target = newState.entityList[payload.entityId];
 
-            target = newState.enemyList.find(enemy => {
-                return enemy.id === payload.targetId;
-            });
-
-            if (target === undefined) {
-                throw new Error("We didn't find a target to buff, but we were expecting to!");
-            }
+        if (target === undefined) {
+            throw new Error("We didn't find a target to buff, but we were expecting to!");
         }
 
         // Clone the target's effectList now that we have the target (because immutability)
@@ -129,71 +139,70 @@ export function createEntityReducer(): Reducer<EntityStore> {
      * Remove all effects matching the given name with the given value.
      */
     builder.withHandler(Actions.ClearEffect.TYPE, (state, payload) => {
-        // Create a new state with both a new hero and enemy list, because we may be targeting either of them
         const newState = {
             ...state,
-            hero: {
-                ...state.hero,
-            },
-            enemyList: [
-                ...state.enemyList,
-            ]
+            entityList: {...state.entityList},
+        }
+
+        // make a new copy of the entity we want to update, and then give it the reduced deck
+        newState.entityList[payload.entityId] = {
+            ...state.entityList[payload.entityId],
         };
-        let target: Entity | undefined;
 
-        // Find the target in the new state
-        if (payload.targetId === "hero") {
-            target = newState.hero;
-        } else {
-            // We must be targeting an enemy if we aren't targeting the hero
+        const target = newState.entityList[payload.entityId];
 
-            target = newState.enemyList.find(enemy => {
-                return enemy.id === payload.targetId;
-            });
-
-            if (target === undefined) {
-                throw new Error("We didn't find a target to buff, but we were expecting to!");
-            }
+        if (target === undefined) {
+            throw new Error("We didn't find a target to buff, but we were expecting to!");
         }
 
         // Clone the target's effectList now that we have the target (because immutability)
         target.effectList = [...target.effectList];
-
         // It is now safe to mutate the effect list on our target
         target.effectList = target.effectList.filter(effect => effect.name !== payload.effectName);
         return newState;
     });
 
     builder.withHandler(Actions.AddEnemy.TYPE, (state, payload) => {
-        return {
+        const newEnemyId = 'enemy' + state.enemyIdIncrementer;
+        const newState = {
             ...state,
-            enemyList: [
-                ...state.enemyList,
-                {
-                    hp: payload.hp,
-                    maxHp: payload.maxHp,
-                    effectList: payload.effectList,
-                    id: 'enemy' + state.enemyIdIncrementer,
-                },
-            ],
+            entityList: {
+                ...state.entityList,
+            },
             enemyIdIncrementer: state.enemyIdIncrementer + 1,
         }
+        newState.entityList[newEnemyId] = {
+            hp: payload.hp,
+            maxHp: payload.maxHp,
+            effectList: payload.effectList,
+            id: 'enemy' + state.enemyIdIncrementer,
+            energy: 1,
+            maxEnergy: 1,
+            deck: defaultEnemyDeckStore,
+        };
+
+        return newState;
     });
 
-    builder.withHandler(Actions.RemoveEnemy.TYPE, (state, payload) => {
-        return {
+    builder.withHandler(Actions.RemoveEntity.TYPE, (state, payload) => {
+        const newState = {
             ...state,
-            enemyList: state.enemyList.filter(enemy => enemy.id !== payload.id),
-            enemyIdIncrementer: state.enemyIdIncrementer + 1,
+            entityList: { ...state.entityList },
         }
+        delete newState.entityList[payload.entityId];
+
+        return newState;
     });
 
     builder.withHandler(Actions.ClearEnemies.TYPE, (state, payload) => {
-        return {
+        const newState = {
             ...state,
-            enemyList: [],
+            entityList: {},
             enemyIdIncrementer: 0,
         }
+        newState.entityList[kHeroId] = state.entityList[kHeroId];
+
+        return newState;
     });
 
     return builder.build();

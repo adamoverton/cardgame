@@ -1,7 +1,7 @@
 import * as EntityActions from 'src/redux/EntityActions';
 import { AttackStep, StrengthDecorator, VulnerableDecorator, WeakDecorator } from 'src/redux/MiscThunks';
 import { ThunkType } from "src/redux/StoreState";
-import { Entity, kHeroId } from "src/models/Entity";
+import { Entity } from "src/models/Entity";
 import { Effect, EffectName, StatusEffect } from "src/models/Effect";
 
 interface StatusEffectWithDefinition {
@@ -51,7 +51,7 @@ class EffectImpl implements Effect {
             if (this.autoDecrementAfterUpkeep) {
                 dispatch(EntityActions.ApplyEffect.create({
                     effectName: statusEffect.name,
-                    targetId: entity.id,
+                    entityId: entity.id,
                     magnitude: -1,
                 }));
             }
@@ -82,7 +82,8 @@ export const EffectDefinitions = new Map<EffectName, EffectImpl> ([
         onStartTurnUpkeep: (entity: Entity, statusEffect: StatusEffect): ThunkType => {
             return (dispatch, getState, extraArgument) => {
                 dispatch(EntityActions.AdjustEnergy.create({
-                        energy: statusEffect.magnitude,
+                    entityId: entity.id,
+                    energy: statusEffect.magnitude,
                 }));
             }
         }
@@ -93,8 +94,8 @@ export const EffectDefinitions = new Map<EffectName, EffectImpl> ([
         onStartTurnUpkeep: (entity: Entity, statusEffect: StatusEffect): ThunkType => {
             return (dispatch, getState, extraArgument) => {
                 dispatch(EntityActions.ClearEffect.create({
+                    entityId: entity.id,
                     effectName: EffectName.Block,
-                    targetId: kHeroId,
                 }));
             }
         }

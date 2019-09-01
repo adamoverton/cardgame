@@ -10,6 +10,7 @@ import { Energy } from "src/components/Energy";
 import { GameStage } from "src/components/GameStage";
 import { Hand } from "src/components/Hand";
 import * as React from "react";
+import { kHeroId } from 'src/models/Entity';
 
 export interface BaseGameViewState {
     hp: number;
@@ -35,8 +36,6 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
             maxHp,
             energy,
             maxEnergy,
-            playCard,
-            endTurn,
             hand,
         } = this.props;
 
@@ -48,12 +47,12 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
                     <GameStage />
                     <div className="foreground">
                         <Hand
-                            playCard={playCard}
+                            playCard={this.props.playCard}
                             cardList={hand}
                         />
                         <div
                             className="endTurn"
-                            onClick={endTurn}
+                            onClick={this.props.endTurn}
                         >
                             End Turn
                         </div>
@@ -65,7 +64,9 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
     }
 }
 
-export const mapStateToProps = ({entity: {hero}, deck: {battleCards}}: StoreState) => {
+export const mapStateToProps = (store: StoreState) => {
+    const hero = store.entity.entityList[kHeroId];
+    const battleCards = hero.deck.battleCards;
     return {
         hp: hero.hp,
         maxHp: hero.maxHp,

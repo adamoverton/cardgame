@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { PureComponent, ReactNode } from 'react';
 import { PureEntity } from './Entity';
-import { Enemy } from "src/models/Entity";
+import { Entity } from "src/models/Entity";
 
 export interface EnemyListProps {
-    enemies: Enemy[];
+    enemies: Entity[];
 }
 
 export class EnemyList extends PureComponent<EnemyListProps> {
@@ -18,7 +18,7 @@ export class EnemyList extends PureComponent<EnemyListProps> {
         );
     };
     
-    private renderEnemy = (enemy: Enemy): ReactNode => {
+    private renderEnemy = (enemy: Entity): ReactNode => {
         return <PureEntity entity={enemy} showHp = {true}/>;
     };
 }

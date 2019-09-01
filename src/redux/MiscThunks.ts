@@ -3,8 +3,8 @@ import * as EntityActions from 'src/redux/EntityActions';
 import { EffectDefinitions, statusEffectListToSortedEffectList } from 'src/gameLogic/EffectDefinitions';
 import { Cast} from 'src/models/Card';
 import randomInt from 'random-int';
-import { StoreState, ThunkType } from "src/redux/StoreState";
-import { Entity, kHeroId } from "src/models/Entity";
+import { ThunkType } from "src/redux/StoreState";
+import { kHeroId } from "src/models/Entity";
 import { EffectName, TargetType } from "src/models/Effect";
 import { Card } from "src/models/Card";
 
@@ -13,12 +13,13 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
         const state = getState();
 
         // When there is not enough Energy to play a card, don't play the card
-        if (state.entity.hero.energy - card.energyCost < 0) {
+        if (state.entity.entityList[kHeroId].energy - card.energyCost < 0) {
             return;
         }
 
         // Pay Energy cost for playing this card
         dispatch(EntityActions.AdjustEnergy.create({
+            entityId: kHeroId,
             energy: -card.energyCost,
         }));
 
@@ -34,13 +35,15 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
                     castTargetList.push(targetId);
                     break;
                 case TargetType.AllEnemy:
-                    for (const enemy of state.entity.enemyList) {
-                        castTargetList.push(enemy.id);
-                    }
+                    Object.values(state.entity.entityList).forEach(entity => {
+                        if (entity.id !== kHeroId) {
+                            castTargetList.push(entity.id);
+                        }
+                    });
                     break;
                 case TargetType.RandomEnemy:
-                    const randomArrayIndex = randomInt(0, state.entity.enemyList.length - 1);
-                    castTargetList.push(state.entity.enemyList[randomArrayIndex].id);
+                    const randomArrayIndex = randomInt(0, Object.values(state.entity.entityList).length - 1);
+                    castTargetList.push(state.entity.entityList[randomArrayIndex].id);
                     break;
                 default:
                     // Typing should prevent us from ever getting here.
@@ -55,30 +58,32 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
                     case EffectName.Strength:
                         dispatch(EntityActions.ApplyEffect.create({
                             effectName: cast.effect,
-                            targetId: castTarget,
+                            entityId: castTarget,
                             magnitude: cast.magnitude,
                         }));
                         break;
                     case EffectName.Weak:
                         dispatch(EntityActions.ApplyEffect.create({
                             effectName: cast.effect,
-                            targetId: castTarget,
+                            entityId: castTarget,
                             magnitude: cast.magnitude,
                         }));
                         break;
                     case EffectName.Block:
                         dispatch(EntityActions.ApplyEffect.create({
                             effectName: cast.effect,
-                            targetId: castTarget,
+                            entityId: castTarget,
                             magnitude: cast.magnitude,
                         }));
                         break;
                 }
             }
         }
-
-        dispatch(DeckActions.DiscardCard.create({
-            card,
+        dispatch(EntityActions.DeckAction.create({ 
+            entityId: kHeroId,
+            deckAction: DeckActions.DiscardCard.create({
+                card,
+            }),
         }));
     };
 }
@@ -93,27 +98,40 @@ export function startCombat(): ThunkType {
     };
 }
 
-export function drawCards(count: number): ThunkType {
+export function drawCards(entityId: string, count: number): ThunkType {
     return (dispatch, getState, extraArgument) => {
         const state = getState();
-        const drawPileCount = state.deck.battleCards.drawPile.length;
-        const discardPileCount = state.deck.battleCards.discardPile.length;
+        const deck = state.entity.entityList[entityId].deck;
+        const drawPileCount = deck.battleCards.drawPile.length;
+        const discardPileCount = deck.battleCards.discardPile.length;
 
         // How many do we draw the first time
         if (drawPileCount < count) {
             // Draw all the available cards
-            dispatch(DeckActions.DrawCards.create({count: drawPileCount}));
+            dispatch(EntityActions.DeckAction.create({ 
+                entityId: kHeroId,
+                deckAction: DeckActions.DrawCards.create({count: drawPileCount})
+            }));
 
             // Count how many more I want
             const remainingDrawCount = count - drawPileCount;
 
             // Shuffle
-            dispatch(DeckActions.ShuffleDiscardPileIntoDrawPile.create({}));
+            dispatch(EntityActions.DeckAction.create({ 
+                entityId: kHeroId,
+                deckAction: DeckActions.ShuffleDiscardPileIntoDrawPile.create({})
+            }));
 
             // Draw as many of what I want as possible
-            dispatch(DeckActions.DrawCards.create({count: Math.min(remainingDrawCount, discardPileCount)}));
+            dispatch(EntityActions.DeckAction.create({ 
+                entityId: kHeroId,
+                deckAction: DeckActions.DrawCards.create({count: Math.min(remainingDrawCount, discardPileCount)})
+            }));
         } else {
-            dispatch(DeckActions.DrawCards.create({count}));
+            dispatch(EntityActions.DeckAction.create({ 
+                entityId: kHeroId,
+                deckAction: DeckActions.DrawCards.create({count})
+            }));
         }
 
     }
@@ -123,7 +141,7 @@ export function drawCards(count: number): ThunkType {
 export function startTurnUpkeep(entityId: string): ThunkType {
     return (dispatch, getState, extraArgument) => {
         const state = getState();
-        const entity = getEntityById(entityId, state);
+        const entity = state.entity.entityList[entityId];
 
         // loop through all status effects and call them with the event
         for (const statusEffect of entity.effectList) {
@@ -137,29 +155,31 @@ export function endTurn(): ThunkType {
         //
         // Do end of hero turn upkeep
         //
+        const state = getState();
 
-        // Move hand to discard pile
-        dispatch(DeckActions.DiscardHand.create({}));
+        // Move hero's hand to discard pile
+        dispatch(EntityActions.DeckAction.create({ 
+            entityId: kHeroId,
+            deckAction: DeckActions.DiscardHand.create({}),
+        }));
 
         // Go through each enemy and do their turn
-        for (const enemy of getState().entity.enemyList) {
-            startTurnUpkeep(enemy.id)(dispatch, getState, extraArgument);
-        }
+        Object.values(state.entity.entityList).forEach((entity) => {
+            if (entity.id !== kHeroId) {
+                startTurnUpkeep(entity.id)(dispatch, getState, extraArgument);
+            }
+        });
 
         // Hero's turn again
         // The basics
-        dispatch(EntityActions.ResetEnergy.create({}));
+        dispatch(EntityActions.ResetEnergy.create({ entityId: kHeroId }));
 
         startTurnUpkeep(kHeroId)(dispatch, getState, extraArgument);
 
         // Draw hero cards CONSIDER: whether enemies will do this and just play cards too
-        drawCards(5)(dispatch, getState, extraArgument);
+        drawCards(kHeroId, 5)(dispatch, getState, extraArgument);
 
     };
-}
-
-function getEntityById(id: string, state: StoreState): Entity {
-    return (id === kHeroId) ? state.entity.hero : state.entity.enemyList.find(enemy => enemy.id === id)!;
 }
 
 //
@@ -183,11 +203,12 @@ function getEntityById(id: string, state: StoreState): Entity {
 
 export function attack(attackCast: Cast, sourceId: string, targetId: string): ThunkType {
     return (dispatch, getState, extraArgument) => {
+        const state = getState();
         // create attack
         let attackStep: AttackStep = new MagnitudeAttack(attackCast.magnitude);
 
-        const sourceEntity = getEntityById(sourceId, getState());
-        const targetEntity = getEntityById(targetId, getState());
+        const sourceEntity = state.entity.entityList[sourceId];
+        const targetEntity = state.entity.entityList[targetId];
 
         // loop through all status effects of the attack source and the attack target
         // (relics can also be a source of status effects)
@@ -219,15 +240,15 @@ export function attack(attackCast: Cast, sourceId: string, targetId: string): Th
             // Adjust block effect due to damage
             const blockAmountUsed = damageToFace > 0 ? blockEffect.magnitude : incomingDamage;
             dispatch(EntityActions.ApplyEffect.create({
+                entityId: targetId,
                 effectName: EffectName.Block,
-                targetId,
                 magnitude: -blockAmountUsed,
             }));
         }
 
         dispatch(EntityActions.AdjustHp.create({
+            entityId: targetId,
             hp: -damageToFace,
-            targetEntityId: targetId,
         }));
     }
 }

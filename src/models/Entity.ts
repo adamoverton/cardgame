@@ -1,19 +1,14 @@
 import { StatusEffect } from "src/models/Effect";
+import { DeckStore } from 'src/redux/DeckTypes';
 
 export interface Entity {
     id: string;
     hp: number;
     maxHp: number;
     effectList: StatusEffect[];
-}
-
-export interface Hero extends Entity {
-    // relicList: Relic[];
     energy: number;
     maxEnergy: number;
+    deck: DeckStore;
 }
 
-export interface Enemy extends Entity {
-}
-
-export const kHeroId = "hero";
+export const kHeroId: string = "hero";

@@ -14,3 +14,5 @@ export const DrawCards = TypedAction.define("gameplay::drawCards")<{
 
 export const ShuffleDiscardPileIntoDrawPile = TypedAction.define("gameplay::shuffleDiscardPileIntoDrawPile")<{
 }>();
+
+export const DeckActions = DiscardCard || DiscardHand || DrawCards || ShuffleDiscardPileIntoDrawPile;
