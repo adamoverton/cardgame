@@ -4,7 +4,7 @@ import { EffectDefinitions, statusEffectListToSortedEffectList } from 'src/gameL
 import { Cast} from 'src/models/Card';
 import randomInt from 'random-int';
 import { ThunkType } from "src/redux/StoreState";
-import { kHeroId } from "src/models/Entity";
+import { kHeroId, Entity } from "src/models/Entity";
 import { EffectName, TargetType } from "src/models/Effect";
 import { Card } from "src/models/Card";
 
@@ -13,13 +13,13 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
         const state = getState();
 
         // When there is not enough Energy to play a card, don't play the card
-        if (state.entity.entityList[kHeroId].energy - card.energyCost < 0) {
+        if (state.entity.entityList[sourceId].energy - card.energyCost < 0) {
             return;
         }
 
         // Pay Energy cost for playing this card
         dispatch(EntityActions.AdjustEnergy.create({
-            entityId: kHeroId,
+            entityId: sourceId,
             energy: -card.energyCost,
         }));
 
@@ -109,7 +109,7 @@ export function drawCards(entityId: string, count: number): ThunkType {
         if (drawPileCount < count) {
             // Draw all the available cards
             dispatch(EntityActions.DeckAction.create({ 
-                entityId: kHeroId,
+                entityId,
                 deckAction: DeckActions.DrawCards.create({count: drawPileCount})
             }));
 
@@ -118,18 +118,18 @@ export function drawCards(entityId: string, count: number): ThunkType {
 
             // Shuffle
             dispatch(EntityActions.DeckAction.create({ 
-                entityId: kHeroId,
+                entityId,
                 deckAction: DeckActions.ShuffleDiscardPileIntoDrawPile.create({})
             }));
 
             // Draw as many of what I want as possible
             dispatch(EntityActions.DeckAction.create({ 
-                entityId: kHeroId,
+                entityId,
                 deckAction: DeckActions.DrawCards.create({count: Math.min(remainingDrawCount, discardPileCount)})
             }));
         } else {
             dispatch(EntityActions.DeckAction.create({ 
-                entityId: kHeroId,
+                entityId,
                 deckAction: DeckActions.DrawCards.create({count})
             }));
         }
@@ -164,11 +164,7 @@ export function endTurn(): ThunkType {
         }));
 
         // Go through each enemy and do their turn
-        Object.values(state.entity.entityList).forEach((entity) => {
-            if (entity.id !== kHeroId) {
-                startTurnUpkeep(entity.id)(dispatch, getState, extraArgument);
-            }
-        });
+        doEnemyTurn()(dispatch, getState, extraArgument);
 
         // Hero's turn again
         // The basics
@@ -177,10 +173,61 @@ export function endTurn(): ThunkType {
         startTurnUpkeep(kHeroId)(dispatch, getState, extraArgument);
 
         // Draw hero cards CONSIDER: whether enemies will do this and just play cards too
-        drawCards(kHeroId, 5)(dispatch, getState, extraArgument);
+        const hero = state.entity.entityList[kHeroId];
 
+        // We could do a callback to check for extra card draw here
+        const drawCount = hero.deck.battleCards.drawCount;
+        drawCards(kHeroId, drawCount)(dispatch, getState, extraArgument);
     };
 }
+
+export function doEnemyTurn(): ThunkType {
+    return (dispatch, getState, extraArgument) => {
+        const state = getState();
+
+        // Make a handy array of enemies
+        const enemyList: Entity[] = [];
+        Object.values(state.entity.entityList).forEach((entity) => {
+            if (entity.id !== kHeroId) {
+                enemyList.push(entity);
+            }
+        });
+
+        // Go through each enemy and do their turn upkeep (update buffs and debuffs)
+        enemyList.map((entity => {
+            startTurnUpkeep(entity.id)(dispatch, getState, extraArgument);
+        }));
+
+        // TODO: If it is poisoned, can't we lose an enemy at this point and need to update our array?
+        // Actually this can happen at any moment, like in the middle of playing a card if it incidentally dies
+
+        // Go through each enemy and play their hands
+        enemyList.map((entity => {
+            console.log("Enemy turn for: " + entity.id);
+            entity.deck.battleCards.hand.map(card => {
+                // Every card will be played, and that should be fine, but if we ran out of energy, 
+                // playCard would just refuse to play it
+
+                playCard(card, entity.id, kHeroId)(dispatch, getState, extraArgument);
+                console.log("Playing card: " + card.title);
+            });
+
+            // Discard any remaining cards, for completeness
+            dispatch(EntityActions.DeckAction.create({ 
+                entityId: entity.id,
+                deckAction: DeckActions.DiscardHand.create({}),
+            }));
+
+            // Draw the new hand so we can show intents
+            const drawCount = entity.deck.battleCards.drawCount;
+            drawCards(entity.id, drawCount)(dispatch, getState, extraArgument);
+
+            // Reset energy
+            dispatch(EntityActions.ResetEnergy.create({ entityId: entity.id }));
+        }));
+    };
+}
+
 
 //
 // TODO: Revive this to apply decorations to this process!

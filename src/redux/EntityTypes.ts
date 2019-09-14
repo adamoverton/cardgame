@@ -35,8 +35,8 @@ export const defaultEntityStore: EntityStore = {
             id: "enemy1",
             hp: 10,
             maxHp: 50,
-            energy: 1,
-            maxEnergy: 1,
+            energy: 2,
+            maxEnergy: 2,
             effectList: [
                 {
                     name: EffectName.Vulnerable,
@@ -50,8 +50,8 @@ export const defaultEntityStore: EntityStore = {
             id: "enemy2",
             hp: 20,
             maxHp: 100,
-            energy: 1,
-            maxEnergy: 1,
+            energy: 2,
+            maxEnergy: 2,
             effectList: [],
             deck: defaultEnemyDeckStore,
         }

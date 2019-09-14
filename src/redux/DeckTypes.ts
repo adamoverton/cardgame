@@ -6,6 +6,7 @@ export interface BattleCards {
     hand: Card[];
     discardPile: Card[];
     // exhaustPile: Card[];
+    drawCount: number;
     cardIdIncrementer: number;
 }
 
@@ -34,6 +35,7 @@ export const defaultHeroDeckStore: DeckStore = {
             {...CardDefinitions.get(CardName.BlockTest)!, id: 11},
         ],
         discardPile: [],
+        drawCount: 5,
         cardIdIncrementer: 500,
     },
 };
@@ -42,12 +44,13 @@ export const defaultEnemyDeckStore: DeckStore = {
     deck: [],
     battleCards: {
         drawPile: [
-            {...CardDefinitions.get(CardName.Strike)!, id: 6},
         ],
         hand: [
             {...CardDefinitions.get(CardName.Strike)!, id: 7},
+            {...CardDefinitions.get(CardName.Defend)!, id: 8},
         ],
         discardPile: [],
+        drawCount: 2,
         cardIdIncrementer: 500,
     },
 };
