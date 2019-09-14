@@ -5,6 +5,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { StoreState } from "src/redux/StoreState";
 import { combineReducers } from "redoodle";
 import { createEntityReducer } from "src/redux/EntityReducer";
+import { createTargetingReducer } from "src/redux/TargetingReducer";
 
 const composedEnhancers: StoreEnhancer = composeWithDevTools(
     applyMiddleware(thunk),
@@ -13,6 +14,7 @@ const composedEnhancers: StoreEnhancer = composeWithDevTools(
 const createStoreReducer = () => {
     return combineReducers<StoreState>({
         entity: createEntityReducer(),
+        targeting: createTargetingReducer(),
     });
 };
 

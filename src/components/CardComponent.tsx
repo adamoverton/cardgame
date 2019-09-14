@@ -1,17 +1,27 @@
 import * as React from 'react';
 import { PureComponent, ReactNode } from 'react';
 import { Card } from 'src/models/Card';
-import { kHeroId } from "src/models/Entity";
 import 'src/components/CardComponent.scss';
+import { connect } from "react-redux";
+import { SetActiveCard } from "src/redux/TargetingActions";
+import { Dispatch } from "redoodle";
 
-export interface CardComponentProps {
+export interface CardComponentOwnProps {
     card: Card;
     playCard: (card: Card, sourceId: string, targetId: string) => void;
 }
 
-export class CardComponent extends PureComponent<CardComponentProps> {
-    onclick = () => {
-        this.props.playCard(this.props.card, kHeroId, "enemy1");
+export interface CardComponentDispatch {
+    setActiveCard: (activeCard: Card) => void;
+}
+
+type BaseCardComponentProps = CardComponentOwnProps & CardComponentDispatch
+
+export class BaseCardComponent extends PureComponent<BaseCardComponentProps> {
+
+    handleDragStart = () => {
+        // set this card to be the active one
+        this.props.setActiveCard(this.props.card);
     };
 
     render(): ReactNode {
@@ -23,7 +33,10 @@ export class CardComponent extends PureComponent<CardComponentProps> {
         } = this.props.card;
 
         return (
-            <div className="card" onClick={this.onclick}>
+            <div className="card"
+                 onMouseDown={this.handleDragStart}
+                 onTouchStart={this.handleDragStart}
+            >
                 <div className="title">{title}</div>
                 <div className="description">{description}</div>
                 <div className="castList">
@@ -36,3 +49,13 @@ export class CardComponent extends PureComponent<CardComponentProps> {
         );
     }
 }
+
+export const mapDispatchToProps = (dispatch: Dispatch) => {
+    return {
+        setActiveCard: (activeCard: Card) => dispatch(SetActiveCard.create({
+            activeCard: activeCard,
+        })),
+    };
+};
+
+export const CardComponent = connect<null, CardComponentDispatch>(null, mapDispatchToProps)(BaseCardComponent);

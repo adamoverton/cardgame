@@ -3,7 +3,7 @@ import { PureComponent, ReactNode } from 'react';
 import { StoreState } from 'src/redux/StoreState';
 import { EnemyList } from 'src/components/EnemyList';
 import { connect } from 'react-redux';
-import { PureEntity } from 'src/components/Entity';
+import { EntityComponent } from 'src/components/EntityComponent';
 import { Entity, kHeroId } from "src/models/Entity";
 import 'src/components/GameStage.scss';
 
@@ -18,7 +18,7 @@ class BaseGameStage extends PureComponent<GameStageProps> {
 
         return (
             <div className="gameStage">
-                <PureEntity showHp = {false} entity={hero} additionalClass="hero"/>
+                <EntityComponent showHp = {false} entity={hero} additionalClass="hero"/>
                 <EnemyList enemies={enemies}/>
             </div>
         );

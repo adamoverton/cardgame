@@ -12,7 +12,7 @@ import { Hand } from "src/components/Hand";
 import * as React from "react";
 import { kHeroId } from 'src/models/Entity';
 
-export interface BaseGameViewState {
+export interface GameViewStateProps {
     hp: number;
     maxHp: number;
     energy: number;
@@ -21,12 +21,12 @@ export interface BaseGameViewState {
     hand: Card[];
 }
 
-export interface BaseGameViewDispatch {
+export interface GameViewDispatchProps {
     playCard: (card: Card, sourceId: string, targetId: string) => void;
     endTurn: () => void;
 }
 
-type BaseGameViewProps  = BaseGameViewState & BaseGameViewDispatch
+type BaseGameViewProps = GameViewStateProps & GameViewDispatchProps
 
 export class BaseGameView extends PureComponent<BaseGameViewProps> {
 
@@ -82,4 +82,4 @@ export const mapDispatchToProps = {
     endTurn,
 };
 
-export const GameView = connect<BaseGameViewState, BaseGameViewDispatch>(mapStateToProps, mapDispatchToProps)(BaseGameView);
+export const GameView = connect<GameViewStateProps, GameViewDispatchProps>(mapStateToProps, mapDispatchToProps)(BaseGameView);

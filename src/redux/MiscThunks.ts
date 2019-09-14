@@ -8,6 +8,19 @@ import { kHeroId, Entity } from "src/models/Entity";
 import { EffectName, TargetType } from "src/models/Effect";
 import { Card } from "src/models/Card";
 
+
+export function playActiveCard(): ThunkType {
+    return (dispatch, getState, extraArgument) => {
+        const state = getState();
+        const activeCard = state.targeting.activeCard;
+        const targetedEntityId = state.targeting.targetedEntityId;
+
+        if (activeCard && targetedEntityId) {
+            playCard(activeCard, kHeroId, targetedEntityId)(dispatch, getState, extraArgument);
+        }
+    }
+}
+
 export function playCard(card: Card, sourceId: string, targetId: string): ThunkType {
     return (dispatch, getState, extraArgument) => {
         const state = getState();
