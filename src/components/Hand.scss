@@ -1,0 +1,22 @@
+.hand {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+
+    .cardAnimationWrapper {
+        &:hover {
+            .card {
+                top: -100px;
+                margin: 0 10px;
+            }
+        }
+
+        .card {
+            position: relative;
+            top: 0;
+            transition: top .1s, margin .1s;
+        }
+    }
+}

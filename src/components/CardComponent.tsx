@@ -2,6 +2,7 @@ import * as React from 'react';
 import { PureComponent, ReactNode } from 'react';
 import { Card } from 'src/models/Card';
 import { kHeroId } from "src/models/Entity";
+import 'src/components/CardComponent.scss';
 
 export interface CardComponentProps {
     card: Card;
