@@ -18,6 +18,6 @@ export class EffectList extends PureComponent<EffectListProps> {
         );
     }
     private renderEffect = (effect: StatusEffect): ReactNode => {
-        return <div>{effect.name}: {effect.magnitude}</div>
+        return <div key={effect.name} >{effect.name}: {effect.magnitude}</div>
     };
 }
