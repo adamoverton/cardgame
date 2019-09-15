@@ -38,10 +38,3 @@ export interface Card {
     energyCost: number;
 }
 
-export enum CardName {
-    Strike = "Strike",
-    Defend = "Defend",
-    Inflame = "Inflame",
-    Uppercut = "Uppercut",
-    BlockTest = "BlockTest",
-}

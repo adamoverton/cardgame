@@ -34,4 +34,4 @@ export const mapStateToProps = ({entity: { entityList: entityList}}: StoreState)
     };
 };
 
-export const GameStage = connect(mapStateToProps, undefined)(BaseGameStage);
+export const GameStage = connect<GameStageProps>(mapStateToProps)(BaseGameStage);

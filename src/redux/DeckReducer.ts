@@ -1,6 +1,7 @@
 import { Reducer, TypedReducer } from 'redoodle';
 import * as Actions from 'src/redux/DeckActions';
 import { DeckStore } from "src/redux/DeckTypes";
+import randomInt from 'random-int';
 
 export function createDeckReducer(): Reducer<DeckStore> {
     const builder = TypedReducer.builder<DeckStore>();
@@ -47,12 +48,25 @@ export function createDeckReducer(): Reducer<DeckStore> {
     });
 
     builder.withHandler(Actions.ShuffleDiscardPileIntoDrawPile.TYPE, (state, payload) => {
+        const newPile = [];
+        const discardPile = [...state.battleCards.discardPile];
+        while (discardPile.length > 0) {
+            // Pick a random card from the discard pile
+            const cardIndex = randomInt(0, discardPile.length - 1);
+
+            // Put it in the draw pile
+            newPile.push(discardPile[cardIndex]);
+
+            // Remove it from discard pile
+            discardPile.splice(cardIndex, 1);
+        }
+
         const newState = {
             ...state,
             battleCards: {
                 ...state.battleCards,
                 discardPile: [],
-                drawPile: [...state.battleCards.drawPile, ...state.battleCards.discardPile],
+                drawPile: newPile,
             },
         };
 

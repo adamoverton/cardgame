@@ -1,5 +1,6 @@
 import { CardDefinitions} from "src/gameLogic/CardDefinitions";
-import { Card, CardName } from "src/models/Card";
+import { Card } from "src/models/Card";
+import { CardName } from "src/gameLogic/CardDefinitions";
 
 export interface BattleCards {
     drawPile: Card[];
@@ -19,22 +20,21 @@ export const defaultHeroDeckStore: DeckStore = {
     deck: [],
     battleCards: {
         drawPile: [
-            {...CardDefinitions.get(CardName.Defend)!, id: 0},
-            {...CardDefinitions.get(CardName.Strike)!, id: 1},
-            {...CardDefinitions.get(CardName.Strike)!, id: 2},
-            {...CardDefinitions.get(CardName.Defend)!, id: 3},
-            {...CardDefinitions.get(CardName.Defend)!, id: 4},
-            {...CardDefinitions.get(CardName.Strike)!, id: 5},
-            {...CardDefinitions.get(CardName.Strike)!, id: 6},
         ],
         hand: [
-            {...CardDefinitions.get(CardName.Strike)!, id: 7},
-            {...CardDefinitions.get(CardName.Defend)!, id: 8},
-            {...CardDefinitions.get(CardName.Inflame)!, id: 9},
-            {...CardDefinitions.get(CardName.Uppercut)!, id: 10},
-            {...CardDefinitions.get(CardName.BlockTest)!, id: 11},
         ],
-        discardPile: [],
+        discardPile: [
+            {...CardDefinitions.get(CardName.Bash)!, id: 0},
+            {...CardDefinitions.get(CardName.Strike)!, id: 1},
+            {...CardDefinitions.get(CardName.Strike)!, id: 2},
+            {...CardDefinitions.get(CardName.Strike)!, id: 3},
+            {...CardDefinitions.get(CardName.Strike)!, id: 4},
+            {...CardDefinitions.get(CardName.Strike)!, id: 5},
+            {...CardDefinitions.get(CardName.Defend)!, id: 6},
+            {...CardDefinitions.get(CardName.Defend)!, id: 7},
+            {...CardDefinitions.get(CardName.Defend)!, id: 8},
+            {...CardDefinitions.get(CardName.Defend)!, id: 9},
+        ],
         drawCount: 5,
         cardIdIncrementer: 500,
     },
@@ -44,10 +44,11 @@ export const defaultEnemyDeckStore: DeckStore = {
     deck: [],
     battleCards: {
         drawPile: [
+            {...CardDefinitions.get(CardName.Thrash)!, id: 7},
+            {...CardDefinitions.get(CardName.Bellow)!, id: 9},
         ],
         hand: [
-            {...CardDefinitions.get(CardName.Strike)!, id: 7},
-            {...CardDefinitions.get(CardName.Defend)!, id: 8},
+            {...CardDefinitions.get(CardName.Chomp)!, id: 8},
         ],
         discardPile: [],
         drawCount: 2,

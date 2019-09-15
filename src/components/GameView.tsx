@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { StoreState } from 'src/redux/StoreState';
 import 'src/components/GameView.scss';
-import { endTurn, playCard } from 'src/redux/MiscThunks';
+import { endTurn, playCard, drawCards } from 'src/redux/MiscThunks';
 import { StatusEffect } from "src/models/Effect";
 import { Card } from "src/models/Card";
 import { PureComponent, ReactNode } from "react";
@@ -24,11 +24,15 @@ export interface GameViewStateProps {
 export interface GameViewDispatchProps {
     playCard: (card: Card, sourceId: string, targetId: string) => void;
     endTurn: () => void;
+    drawInitialHand: () => void;
 }
 
 type BaseGameViewProps = GameViewStateProps & GameViewDispatchProps
 
 export class BaseGameView extends PureComponent<BaseGameViewProps> {
+    componentDidMount() {
+        this.props.drawInitialHand();
+    }
 
     render(): ReactNode {
         const {
@@ -80,6 +84,7 @@ export const mapStateToProps = (store: StoreState) => {
 export const mapDispatchToProps = {
     playCard,
     endTurn,
+    drawInitialHand: () => drawCards(kHeroId, 5),
 };
 
 export const GameView = connect<GameViewStateProps, GameViewDispatchProps>(mapStateToProps, mapDispatchToProps)(BaseGameView);

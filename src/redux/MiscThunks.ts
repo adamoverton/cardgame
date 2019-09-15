@@ -69,20 +69,9 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
                         attack(cast, sourceId, castTarget)(dispatch, getState, extraArgument);
                         break;
                     case EffectName.Strength:
-                        dispatch(EntityActions.ApplyEffect.create({
-                            effectName: cast.effect,
-                            entityId: castTarget,
-                            magnitude: cast.magnitude,
-                        }));
-                        break;
                     case EffectName.Weak:
-                        dispatch(EntityActions.ApplyEffect.create({
-                            effectName: cast.effect,
-                            entityId: castTarget,
-                            magnitude: cast.magnitude,
-                        }));
-                        break;
                     case EffectName.Block:
+                    case EffectName.Vulnerable:
                         dispatch(EntityActions.ApplyEffect.create({
                             effectName: cast.effect,
                             entityId: castTarget,

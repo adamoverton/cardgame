@@ -1,11 +1,42 @@
 import { TargetType } from 'src/models/Effect';
 import { EffectName } from "src/models/Effect";
-import { Card, CardName, CardType } from "src/models/Card";
+import { Card, CardType } from "src/models/Card";
+
+export enum CardName {
+    Bash = "Bash",
+    Strike = "Strike",
+    Defend = "Defend",
+    Inflame = "Inflame",
+    Uppercut = "Uppercut",
+    BlockTest = "BlockTest",
+    // Enemy cards
+    Chomp = "Chomp",
+    Thrash = "Thrash",
+    Bellow = "Bellow",
+}
 
 /**
  * A list of card definitions
  */
 export const CardDefinitions = new Map<CardName, Card>([
+    [CardName.Bash, {
+        id: 0,
+        title: "Bash",
+        type: CardType.Attack,
+        description: "",
+        castList: [
+        {
+            effect: EffectName.Attack,
+            target: TargetType.Targeted,
+            magnitude: 8,
+        }, {
+            effect: EffectName.Vulnerable,
+            target: TargetType.Targeted,
+            magnitude: 2,
+        }
+        ],
+        energyCost: 2,
+    }],
     [CardName.Strike, {
         id: 0,
         title: "Strike",
@@ -57,12 +88,56 @@ export const CardDefinitions = new Map<CardName, Card>([
     [CardName.Uppercut, {
         id: 0,
         title: "Uppercut",
-        type: CardType.Skill,
+        type: CardType.Attack,
         description: "Deals damage and applies weak to the target",
         castList: [{
             effect: EffectName.Weak,
             target: TargetType.Targeted,
             magnitude: 1,
+        }],
+        energyCost: 1,
+    }],
+    [CardName.Chomp, {
+        id: 0,
+        title: "Chomp",
+        type: CardType.Attack,
+        description: "Chomp",
+        castList: [{
+            effect: EffectName.Attack,
+            target: TargetType.Targeted,
+            magnitude: 11,
+        }],
+        energyCost: 1,
+    }],
+    [CardName.Thrash, {
+        id: 0,
+        title: "Thrash",
+        type: CardType.Attack,
+        description: "Thrash",
+        castList: [{
+            effect: EffectName.Attack,
+            target: TargetType.Targeted,
+            magnitude: 7,
+        }, {
+            effect: EffectName.Block,
+            target: TargetType.Self,
+            magnitude: 5,
+        }],
+        energyCost: 1,
+    }],
+    [CardName.Bellow, {
+        id: 0,
+        title: "Bellow",
+        type: CardType.Skill,
+        description: "Bellow",
+        castList: [{
+            effect: EffectName.Strength,
+            target: TargetType.Self,
+            magnitude: 3,
+        }, {
+            effect: EffectName.Block,
+            target: TargetType.Self,
+            magnitude: 6,
         }],
         energyCost: 1,
     }],
