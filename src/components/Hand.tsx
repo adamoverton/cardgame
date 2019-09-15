@@ -20,7 +20,7 @@ export class Hand extends PureComponent<HandProps> {
             <div className="hand">
                 {
                     cardList.map((card, index) =>
-                        <div className="cardAnimationWrapper">
+                        <div key={card.id} className="cardAnimationWrapper">
                             <CardComponent
                                 key={card.id}
                                 card={card}
