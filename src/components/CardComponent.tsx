@@ -53,7 +53,7 @@ export class BaseCardComponent extends PureComponent<BaseCardComponentProps> {
 export const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
         setActiveCard: (activeCard: Card) => dispatch(SetActiveCard.create({
-            activeCard: activeCard,
+            activeCard,
         })),
     };
 };
