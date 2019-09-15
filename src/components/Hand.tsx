@@ -6,14 +6,12 @@ import 'src/components/Hand.scss';
 
 export interface HandProps {
     cardList: Card[];
-    playCard: (card: Card, sourceId: string, targetId: string) => void;
 }
 
 export class Hand extends PureComponent<HandProps> {
     render(): ReactNode {
         const {
             cardList,
-            playCard,
         } = this.props;
 
         return (
@@ -24,7 +22,6 @@ export class Hand extends PureComponent<HandProps> {
                             <CardComponent
                                 key={card.id}
                                 card={card}
-                                playCard={playCard}
                             />
                         </div>
                     )

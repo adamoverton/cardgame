@@ -1,6 +1,19 @@
 .gameStage {
+    position: relative;
     display: flex;
     flex-grow: 3;
+
+    .untargetedDropTarget {
+        position: absolute;
+        left: 20%;
+        right: 20%;
+        top: 30px;
+        bottom: 30px;
+
+        &.showDropTarget {
+            border: 2px dashed black;
+        }
+    }
 
     .heroList {
         width: 30%;
@@ -9,7 +22,6 @@
     .enemyList {
         position: absolute;
         right: 0;
-        user-select: none;
     }
 
     .entity {

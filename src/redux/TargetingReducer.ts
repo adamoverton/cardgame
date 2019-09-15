@@ -19,5 +19,13 @@ export function createTargetingReducer(): Reducer<TargetingStore> {
         };
     });
 
+    builder.withHandler(Actions.ClearTargetInfo.TYPE, (state: TargetingStore) => {
+        return {
+            ...state,
+            targetedEntityId: undefined,
+            activeCard: undefined
+        };
+    });
+
     return builder.build();
 }

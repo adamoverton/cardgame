@@ -24,8 +24,7 @@ export const CardDefinitions = new Map<CardName, Card>([
         title: "Bash",
         type: CardType.Attack,
         description: "",
-        castList: [
-        {
+        castList: [{
             effect: EffectName.Attack,
             target: TargetType.Targeted,
             magnitude: 8,
@@ -33,9 +32,9 @@ export const CardDefinitions = new Map<CardName, Card>([
             effect: EffectName.Vulnerable,
             target: TargetType.Targeted,
             magnitude: 2,
-        }
-        ],
+        }],
         energyCost: 2,
+        targeted: true,
     }],
     [CardName.Strike, {
         id: 0,
@@ -48,6 +47,7 @@ export const CardDefinitions = new Map<CardName, Card>([
             magnitude: 6,
         }],
         energyCost: 1,
+        targeted: true,
     }],
     [CardName.Defend, {
         id: 0,
@@ -60,6 +60,7 @@ export const CardDefinitions = new Map<CardName, Card>([
             magnitude: 5,
         }],
         energyCost: 1,
+        targeted: false,
     }],
     [CardName.BlockTest, {
         id: 0,
@@ -72,6 +73,7 @@ export const CardDefinitions = new Map<CardName, Card>([
             magnitude: 8,
         }],
         energyCost: 1,
+        targeted: true,
     }],
     [CardName.Inflame, {
         id: 0,
@@ -84,6 +86,7 @@ export const CardDefinitions = new Map<CardName, Card>([
             magnitude: 2,
         }],
         energyCost: 1,
+        targeted: false,
     }],
     [CardName.Uppercut, {
         id: 0,
@@ -96,6 +99,7 @@ export const CardDefinitions = new Map<CardName, Card>([
             magnitude: 1,
         }],
         energyCost: 1,
+        targeted: true,
     }],
     [CardName.Chomp, {
         id: 0,
@@ -108,6 +112,7 @@ export const CardDefinitions = new Map<CardName, Card>([
             magnitude: 11,
         }],
         energyCost: 1,
+        targeted: true,
     }],
     [CardName.Thrash, {
         id: 0,
@@ -124,6 +129,7 @@ export const CardDefinitions = new Map<CardName, Card>([
             magnitude: 5,
         }],
         energyCost: 1,
+        targeted: true,
     }],
     [CardName.Bellow, {
         id: 0,
@@ -140,5 +146,6 @@ export const CardDefinitions = new Map<CardName, Card>([
             magnitude: 6,
         }],
         energyCost: 1,
+        targeted: true,
     }],
 ]);

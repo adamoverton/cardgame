@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { StoreState } from 'src/redux/StoreState';
 import 'src/components/GameView.scss';
-import { endTurn, playCard, drawCards } from 'src/redux/MiscThunks';
+import { endTurn, drawCards } from 'src/redux/MiscThunks';
 import { StatusEffect } from "src/models/Effect";
 import { Card } from "src/models/Card";
 import { PureComponent, ReactNode } from "react";
@@ -11,6 +11,8 @@ import { GameStage } from "src/components/GameStage";
 import { Hand } from "src/components/Hand";
 import * as React from "react";
 import { kHeroId } from 'src/models/Entity';
+import { Dispatch } from "redoodle";
+import { ClearTargetInfo } from "src/redux/TargetingActions";
 
 export interface GameViewStateProps {
     hp: number;
@@ -22,7 +24,7 @@ export interface GameViewStateProps {
 }
 
 export interface GameViewDispatchProps {
-    playCard: (card: Card, sourceId: string, targetId: string) => void;
+    clearTargetInfo: () => void;
     endTurn: () => void;
     drawInitialHand: () => void;
 }
@@ -34,6 +36,10 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
         this.props.drawInitialHand();
     }
 
+    removeTargeting = () => {
+        this.props.clearTargetInfo();
+    };
+
     render(): ReactNode {
         const {
             hp,
@@ -44,14 +50,15 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
         } = this.props;
 
         return (
-            <div className="gameView">
+            <div className="gameView"
+                 onMouseUp={this.removeTargeting}
+            >
                 <Hp hp={hp} maxHp={maxHp}/>
                 <Energy energy={energy} maxEnergy={maxEnergy}/>
                 <div className="arena">
                     <GameStage />
                     <div className="foreground">
                         <Hand
-                            playCard={this.props.playCard}
                             cardList={hand}
                         />
                         <div
@@ -81,10 +88,12 @@ export const mapStateToProps = (store: StoreState) => {
     };
 };
 
-export const mapDispatchToProps = {
-    playCard,
-    endTurn,
-    drawInitialHand: () => drawCards(kHeroId, 5),
+export const mapDispatchToProps = (dispatch: Dispatch) => {
+    return {
+        clearTargetInfo: () => dispatch(ClearTargetInfo.create({})),
+        endTurn: () => dispatch(endTurn() as any),
+        drawInitialHand: () => dispatch(drawCards(kHeroId, 5) as any),
+    };
 };
 
 export const GameView = connect<GameViewStateProps, GameViewDispatchProps>(mapStateToProps, mapDispatchToProps)(BaseGameView);

@@ -15,13 +15,18 @@ export function playActiveCard(): ThunkType {
         const activeCard = state.targeting.activeCard;
         const targetedEntityId = state.targeting.targetedEntityId;
 
-        if (activeCard && targetedEntityId) {
-            playCard(activeCard, kHeroId, targetedEntityId)(dispatch, getState, extraArgument);
+        // First, we need an active card to, well, play the active card
+        if (activeCard) {
+            // Next, if the active card isn't targeted we can cast it. Otherwise, it's targeted, so we also
+            // need a targetId
+            if ( !activeCard.targeted || targetedEntityId) {
+                playCard(activeCard, kHeroId, targetedEntityId)(dispatch, getState, extraArgument);
+            }
         }
     }
 }
 
-export function playCard(card: Card, sourceId: string, targetId: string): ThunkType {
+export function playCard(card: Card, sourceId: string, targetId?: string): ThunkType {
     return (dispatch, getState, extraArgument) => {
         const state = getState();
 
@@ -45,7 +50,11 @@ export function playCard(card: Card, sourceId: string, targetId: string): ThunkT
                     castTargetList.push(sourceId);
                     break;
                 case TargetType.Targeted:
-                    castTargetList.push(targetId);
+                    if (!targetId) {
+                        console.error("Cast '" + cast.effect + "': A targeted cast needs to have a targetId, but it is undefined");
+                    } else {
+                        castTargetList.push(targetId);
+                    }
                     break;
                 case TargetType.AllEnemy:
                     Object.values(state.entity.entityList).forEach(entity => {

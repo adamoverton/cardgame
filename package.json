@@ -19,6 +19,7 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.9",
     "@types/jest": "^23.3.9",
     "@types/node": "^10.12.2",
     "@types/react": "^16.4.18",
@@ -26,6 +27,7 @@
     "@types/react-redux": "^6.0.9",
     "@types/redux-actions": "^2.3.1",
     "@types/webpack": "^4.32.2",
+    "classnames": "^2.2.6",
     "node-sass": "^4.12.0",
     "redux-devtools-extension": "^2.13.8",
     "typescript": "^3.1.6"

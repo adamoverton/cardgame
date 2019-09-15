@@ -36,5 +36,6 @@ export interface Card {
     description: string;
     castList: Cast[];
     energyCost: number;
+    targeted: boolean;
 }
 

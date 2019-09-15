@@ -8,20 +8,28 @@ import { Dispatch } from "redoodle";
 
 export interface CardComponentOwnProps {
     card: Card;
-    playCard: (card: Card, sourceId: string, targetId: string) => void;
 }
 
 export interface CardComponentDispatch {
-    setActiveCard: (activeCard: Card) => void;
+    setActiveCard: (activeCard: Card | undefined) => void;
 }
 
 type BaseCardComponentProps = CardComponentOwnProps & CardComponentDispatch
 
 export class BaseCardComponent extends PureComponent<BaseCardComponentProps> {
 
-    handleDragStart = () => {
+    handleDragStart = (event: React.MouseEvent | React.TouchEvent) => {
+        event.stopPropagation();
         // set this card to be the active one
         this.props.setActiveCard(this.props.card);
+    };
+
+    preventMouseUpPropagation = (event: React.MouseEvent | React.TouchEvent) => {
+        // Because we have a onMouseUp handler on the GameView that removes targeting information if it's invoked,
+        // and we want to support clicking on card/entity instead of forcing everyone to drag cards, we need this.
+        // The problem is that clicking triggers a mouseDown *and* mouseUp event, so if we don't preventDefault,
+        // GameView will get the mouseUp event and will reset the target.
+        event.stopPropagation();
     };
 
     render(): ReactNode {
@@ -36,6 +44,8 @@ export class BaseCardComponent extends PureComponent<BaseCardComponentProps> {
             <div className="card"
                  onMouseDown={this.handleDragStart}
                  onTouchStart={this.handleDragStart}
+                 onMouseUp={this.preventMouseUpPropagation}
+                 onTouchEnd={this.preventMouseUpPropagation}
             >
                 <div className="title">{title}</div>
                 <div className="description">{description}</div>
@@ -52,7 +62,7 @@ export class BaseCardComponent extends PureComponent<BaseCardComponentProps> {
 
 export const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        setActiveCard: (activeCard: Card) => dispatch(SetActiveCard.create({
+        setActiveCard: (activeCard: Card | undefined) => dispatch(SetActiveCard.create({
             activeCard,
         })),
     };

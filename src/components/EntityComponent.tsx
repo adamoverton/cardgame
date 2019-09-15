@@ -15,7 +15,7 @@ export interface EntityComponentOwnProps {
 }
 
 export interface EntityComponentDispatchProps {
-    setTargetedEntityId: (entityId: string) => void;
+    setTargetedEntityId: (entityId: string | undefined) => void;
     playActiveCard: () => void;
 }
 
@@ -23,8 +23,14 @@ type BaseEntityComponentProps = EntityComponentOwnProps & EntityComponentDispatc
 
 export class BaseEntityComponent extends Component<BaseEntityComponentProps> {
     handleDragEnd = () => {
-        this.props.setTargetedEntityId(this.props.entity.id);
-        this.props.playActiveCard();
+        // Only enemies may be targeted with a card
+        if (this.props.entity.id !== kHeroId) {
+            // Set the target
+            this.props.setTargetedEntityId(this.props.entity.id);
+
+            // Now that we have the target (and assuming we previously set the active card), try to play the active card
+            this.props.playActiveCard();
+        }
     };
 
     render = (): ReactNode => {
@@ -46,14 +52,14 @@ export class BaseEntityComponent extends Component<BaseEntityComponentProps> {
                 </div>   
             <div className="highlight">{this.props.entity.id}</div>
             {this.props.showHp ? <div className="highlight">HP: {this.props.entity.hp} / {this.props.entity.maxHp}</div> : undefined}
-            <EffectList  effectList={this.props.entity.effectList}/>
+            <EffectList effectList={this.props.entity.effectList}/>
         </div>
     };
 }
 
 export const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-        setTargetedEntityId: (entityId: string) => dispatch(SetTargetedEntityId.create({
+        setTargetedEntityId: (entityId: string | undefined) => dispatch(SetTargetedEntityId.create({
             entityId,
         })),
         playActiveCard: () => dispatch(playActiveCard() as any),
