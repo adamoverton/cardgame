@@ -3,7 +3,7 @@ import * as EntityActions from 'src/redux/EntityActions';
 import { EffectDefinitions, statusEffectListToSortedEffectList } from 'src/gameLogic/EffectDefinitions';
 import { Cast} from 'src/models/Card';
 import randomInt from 'random-int';
-import { ThunkType } from "src/redux/StoreState";
+import { ThunkType, StoreState } from "src/redux/StoreState";
 import { kHeroId, Entity } from "src/models/Entity";
 import { EffectName, TargetType } from "src/models/Effect";
 import { Card } from "src/models/Card";
@@ -43,51 +43,28 @@ export function playCard(card: Card, sourceId: string, targetId?: string): Thunk
 
         // Apply the effects for each cast
         for (const cast of card.castList) {
-            const castTargetList: string[] = [];
+            const castCount = cast.castCount || 1;
 
-            switch (cast.target) {
-                case TargetType.Self:
-                    castTargetList.push(sourceId);
-                    break;
-                case TargetType.Targeted:
-                    if (!targetId) {
-                        console.error("Cast '" + cast.effect + "': A targeted cast needs to have a targetId, but it is undefined");
-                    } else {
-                        castTargetList.push(targetId);
+            for (let castIndex = 0; castIndex < castCount; castIndex++) {
+                const castTargetList: string[] = determineTarget(state, cast, sourceId, targetId);
+
+                for (const castTarget of castTargetList) {
+                    switch (cast.effect) {
+                        case EffectName.Attack:
+                            attack(cast, sourceId, castTarget)(dispatch, getState, extraArgument);
+                            break;
+                        case EffectName.Strength:
+                        case EffectName.Weak:
+                        case EffectName.Block:
+                        case EffectName.Poison:                    
+                        case EffectName.Vulnerable:
+                            dispatch(EntityActions.ApplyEffect.create({
+                                effectName: cast.effect,
+                                entityId: castTarget,
+                                magnitude: cast.magnitude,
+                            }));
+                            break;
                     }
-                    break;
-                case TargetType.AllEnemy:
-                    Object.values(state.entity.entityList).forEach(entity => {
-                        if (entity.id !== kHeroId) {
-                            castTargetList.push(entity.id);
-                        }
-                    });
-                    break;
-                case TargetType.RandomEnemy:
-                    const randomArrayIndex = randomInt(0, Object.values(state.entity.entityList).length - 1);
-                    castTargetList.push(state.entity.entityList[randomArrayIndex].id);
-                    break;
-                default:
-                    // Typing should prevent us from ever getting here.
-                    throw new Error('invalid cast target');
-                    break;
-            }
-            for (const castTarget of castTargetList) {
-                switch (cast.effect) {
-                    case EffectName.Attack:
-                        attack(cast, sourceId, castTarget)(dispatch, getState, extraArgument);
-                        break;
-                    case EffectName.Strength:
-                    case EffectName.Weak:
-                    case EffectName.Block:
-                    case EffectName.Poison:                    
-                    case EffectName.Vulnerable:
-                        dispatch(EntityActions.ApplyEffect.create({
-                            effectName: cast.effect,
-                            entityId: castTarget,
-                            magnitude: cast.magnitude,
-                        }));
-                        break;
                 }
             }
         }
@@ -98,6 +75,43 @@ export function playCard(card: Card, sourceId: string, targetId?: string): Thunk
             }),
         }));
     };
+}
+
+function determineTarget(state: StoreState, cast: Cast, sourceId: string, targetId?: string): string[] {
+    const castTargetList: string[] = [];
+
+    switch (cast.target) {
+        case TargetType.Self:
+            castTargetList.push(sourceId);
+            break;
+        case TargetType.Targeted:
+            if (!targetId) {
+                console.error("Cast '" + cast.effect + "': A targeted cast needs to have a targetId, but it is undefined");
+            } else {
+                castTargetList.push(targetId);
+            }
+            break;
+        case TargetType.AllEnemy:
+            Object.values(state.entity.entityList).forEach(entity => {
+                if (entity.id !== kHeroId) {
+                    castTargetList.push(entity.id);
+                }
+            });
+            break;
+
+//Double check random workiness
+        case TargetType.RandomEnemy:
+            const randomArrayIndex = randomInt(1, Object.values(state.entity.entityList).length - 1);
+            const randomKey = Object.keys(state.entity.entityList)[randomArrayIndex];
+            castTargetList.push(state.entity.entityList[randomKey].id);
+            break;
+
+        default:
+            // Typing should prevent us from ever getting here.
+            throw new Error('invalid cast target');
+            break;
+    }
+    return castTargetList;
 }
 
 export function startCombat(): ThunkType {

@@ -10,6 +10,7 @@ export interface Cast {
     effect: EffectName;
     target: TargetType;
     magnitude: number;
+    castCount?: number;
 }
 
 /**

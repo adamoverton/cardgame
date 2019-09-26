@@ -28,6 +28,16 @@ export const defaultEntityStore: EntityStore = {
             ],
             deck: defaultEnemyDeckStore,
         },
+        "Jaw Worm 2": {
+            id: "Jaw Worm 2",
+            hp: 44,
+            maxHp: 44,
+            energy: 1,
+            maxEnergy: 1,
+            effectList: [
+            ],
+            deck: defaultEnemyDeckStore,
+        },
     },
     enemyIdIncrementer: 4,
 };

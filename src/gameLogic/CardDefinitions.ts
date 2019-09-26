@@ -10,6 +10,7 @@ export enum CardName {
     Uppercut = "Uppercut",
     BlockTest = "BlockTest",
     DeadlyPoison = "Deadly Poison",
+    BouncingFlask = "Bouncing Flask",
     // Enemy cards
     Chomp = "Chomp",
     Thrash = "Thrash",
@@ -114,6 +115,20 @@ export const CardDefinitions = new Map<CardName, Card>([
         }],
         energyCost: 1,
         targeted: true,
+    }],
+    [CardName.BouncingFlask, {
+        id: 0,
+        title: "Bouncing Flask",
+        type: CardType.Skill,
+        description: "Apply 3 Poison to a random Enemy 3 times",
+        castList: [{
+            effect: EffectName.Poison,
+            target: TargetType.RandomEnemy,
+            magnitude: 3,
+            castCount: 3,
+        }],
+        energyCost: 2,
+        targeted: false,
     }],
     [CardName.Chomp, {
         id: 0,
