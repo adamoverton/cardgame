@@ -99,7 +99,7 @@ function determineTarget(state: StoreState, cast: Cast, sourceId: string, target
             });
             break;
 
-//Double check random workiness
+// Double check random workiness
         case TargetType.RandomEnemy:
             const randomArrayIndex = randomInt(1, Object.values(state.entity.entityList).length - 1);
             const randomKey = Object.keys(state.entity.entityList)[randomArrayIndex];
