@@ -9,6 +9,7 @@ export enum CardName {
     Inflame = "Inflame",
     Uppercut = "Uppercut",
     BlockTest = "BlockTest",
+    DeadlyPoison = "Deadly Poison",
     // Enemy cards
     Chomp = "Chomp",
     Thrash = "Thrash",
@@ -97,6 +98,19 @@ export const CardDefinitions = new Map<CardName, Card>([
             effect: EffectName.Weak,
             target: TargetType.Targeted,
             magnitude: 1,
+        }],
+        energyCost: 1,
+        targeted: true,
+    }],
+    [CardName.DeadlyPoison, {
+        id: 0,
+        title: "Deadly Poison",
+        type: CardType.Skill,
+        description: "Apply 5 Poison",
+        castList: [{
+            effect: EffectName.Poison,
+            target: TargetType.Targeted,
+            magnitude: 5,
         }],
         energyCost: 1,
         targeted: true,

@@ -25,6 +25,7 @@ export enum EffectName {
     Frail = "Frail", // Reduces the amount of block you apply by a percentage
     Strength = "Strength", // Increases the amount of damage given by a flat amount
     Weak = "Weak", // Reduces the amount of damage given by a percentage
+    Poison = "Poison", // Deal damage equal to the amount of Poison, subtract 1 from Poison stacks
 }
 
 export interface Effect {

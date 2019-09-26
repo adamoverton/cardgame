@@ -34,6 +34,7 @@ export const defaultHeroDeckStore: DeckStore = {
             {...CardDefinitions.get(CardName.Defend)!, id: 7},
             {...CardDefinitions.get(CardName.Defend)!, id: 8},
             {...CardDefinitions.get(CardName.Defend)!, id: 9},
+            {...CardDefinitions.get(CardName.DeadlyPoison)!, id: 10},
         ],
         drawCount: 5,
         cardIdIncrementer: 500,

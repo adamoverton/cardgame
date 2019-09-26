@@ -123,4 +123,17 @@ export const EffectDefinitions = new Map<EffectName, EffectImpl> ([
         applySourceAttackDecorator: (cast: AttackStep, statusEffect: StatusEffect): AttackStep => new WeakDecorator(cast),
         autoDecrementAfterUpkeep: true,
     })],
+    [EffectName.Poison, new EffectImpl({
+        title: 'Poison',
+        description: 'Deal damage equal to the amount of Poison, subtract 1 from Poison stacks',
+        onStartTurnUpkeep: (entity: Entity, statusEffect: StatusEffect): ThunkType => {
+            return (dispatch, getState, extraArgument) => {
+                dispatch(EntityActions.AdjustHp.create({
+                    entityId: entity.id,
+                    hp: -statusEffect.magnitude,
+                }));
+            }
+        },
+        autoDecrementAfterUpkeep: true,
+    })]
 ]);

@@ -80,6 +80,7 @@ export function playCard(card: Card, sourceId: string, targetId?: string): Thunk
                     case EffectName.Strength:
                     case EffectName.Weak:
                     case EffectName.Block:
+                    case EffectName.Poison:                    
                     case EffectName.Vulnerable:
                         dispatch(EntityActions.ApplyEffect.create({
                             effectName: cast.effect,
