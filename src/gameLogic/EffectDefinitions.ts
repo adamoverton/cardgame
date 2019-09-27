@@ -76,6 +76,10 @@ export const EffectDefinitions = new Map<EffectName, EffectImpl> ([
         title: 'Attack',
         description: 'Deal damage',
     })],
+    [EffectName.Heal, new EffectImpl({
+        title: 'Heal',
+        description: 'Heal damage',
+    })],
     [EffectName.BerserkEnergy, new EffectImpl({
         title: 'Berserk Energy',
         description: 'Energy at start of turn',
@@ -131,6 +135,20 @@ export const EffectDefinitions = new Map<EffectName, EffectImpl> ([
                 dispatch(EntityActions.AdjustHp.create({
                     entityId: entity.id,
                     hp: -statusEffect.magnitude,
+                }));
+            }
+        },
+        autoDecrementAfterUpkeep: true,
+    })],
+    [EffectName.Regeneration, new EffectImpl({
+        title: 'Regeneration',
+        description: 'Restore health equal to the amount of Regeneration, subtract 1 from Regeneration stacks',
+        onStartTurnUpkeep: (entity: Entity, statusEffect: StatusEffect): ThunkType => {
+            return (dispatch, getState, extraArgument) => {
+                const maxHeal = Math.min(statusEffect.magnitude, entity.maxHp - entity.hp);
+                dispatch(EntityActions.AdjustHp.create({
+                    entityId: entity.id,
+                    hp: maxHeal,
                 }));
             }
         },

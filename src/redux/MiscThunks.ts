@@ -53,11 +53,19 @@ export function playCard(card: Card, sourceId: string, targetId?: string): Thunk
                         case EffectName.Attack:
                             attack(cast, sourceId, castTarget)(dispatch, getState, extraArgument);
                             break;
+                        case EffectName.Heal:
+                            const maxHeal = Math.min(cast.magnitude, state.entity.entityList[sourceId].maxHp - state.entity.entityList[sourceId].hp);
+                            dispatch(EntityActions.AdjustHp.create({
+                                entityId: castTarget,
+                                hp: maxHeal,
+                            }));
+                            break;
                         case EffectName.Strength:
                         case EffectName.Weak:
                         case EffectName.Block:
                         case EffectName.Poison:                    
                         case EffectName.Vulnerable:
+                        case EffectName.Regeneration:
                             dispatch(EntityActions.ApplyEffect.create({
                                 effectName: cast.effect,
                                 entityId: castTarget,

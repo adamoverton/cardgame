@@ -19,13 +19,15 @@ export enum TargetType {
 // Effects are statuses that are applied AND might reside to do something under certain circumstances
 export enum EffectName {
     Attack = "Attack", // Applies immediately, does not reside
+    Heal = "Heal", // Applies immediately, does not reside
     BerserkEnergy = "BerserkEnergy", // Applies a buff that adds energy at the start of turn
     Block = "Block", // Applies a buff that reduces incoming damage
     Vulnerable = "Vulnerable", // Increases the damage taken by a percentage
     Frail = "Frail", // Reduces the amount of block you apply by a percentage
     Strength = "Strength", // Increases the amount of damage given by a flat amount
-    Weak = "Weak", // Reduces the amount of damage given by a percentage
     Poison = "Poison", // Deal damage equal to the amount of Poison, subtract 1 from Poison stacks
+    Weak = "Weak", // Reduces the amount of damage given by a percentage
+    Regeneration = "Regeneration", // Restore health equal to the amount of Regeneration, subtract 1 from Regeneration stacks
 }
 
 export interface Effect {

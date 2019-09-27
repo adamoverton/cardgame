@@ -26,11 +26,11 @@ export const defaultHeroDeckStore: DeckStore = {
         discardPile: [
             {...CardDefinitions.get(CardName.BouncingFlask)!, id: 0},
             {...CardDefinitions.get(CardName.Bash)!, id: 1},
-            {...CardDefinitions.get(CardName.Strike)!, id: 2},
+            {...CardDefinitions.get(CardName.Recouperate)!, id: 2},
             {...CardDefinitions.get(CardName.Strike)!, id: 3},
             {...CardDefinitions.get(CardName.Strike)!, id: 4},
             {...CardDefinitions.get(CardName.Strike)!, id: 5},
-            {...CardDefinitions.get(CardName.Defend)!, id: 6},
+            {...CardDefinitions.get(CardName.Bite)!, id: 6},
             {...CardDefinitions.get(CardName.Defend)!, id: 7},
             {...CardDefinitions.get(CardName.Defend)!, id: 8},
             {...CardDefinitions.get(CardName.Defend)!, id: 9},

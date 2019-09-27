@@ -11,6 +11,8 @@ export enum CardName {
     BlockTest = "BlockTest",
     DeadlyPoison = "Deadly Poison",
     BouncingFlask = "Bouncing Flask",
+    Recouperate = "Recouperate",
+    Bite = "Bite",
     // Enemy cards
     Chomp = "Chomp",
     Thrash = "Thrash",
@@ -129,6 +131,36 @@ export const CardDefinitions = new Map<CardName, Card>([
         }],
         energyCost: 2,
         targeted: false,
+    }],
+    [CardName.Recouperate, {
+        id: 0,
+        title: "Recouperate",
+        type: CardType.Skill,
+        description: "Apply 5 Regeneration to self",
+        castList: [{
+            effect: EffectName.Regeneration,
+            target: TargetType.Self,
+            magnitude: 5,
+        }],
+        energyCost: 1,
+        targeted: false,
+    }],
+    [CardName.Bite, {
+        id: 0,
+        title: "Bite",
+        type: CardType.Attack,
+        description: "Deal 7 damage, Heal 2 HP",
+        castList: [{
+            effect: EffectName.Attack,
+            target: TargetType.Targeted,
+            magnitude: 7,
+        }, {
+            effect: EffectName.Heal,
+            target: TargetType.Self,
+            magnitude: 2,
+        },],
+        energyCost: 1,
+        targeted: true,
     }],
     [CardName.Chomp, {
         id: 0,
