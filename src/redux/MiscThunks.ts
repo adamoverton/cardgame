@@ -60,6 +60,9 @@ export function playCard(card: Card, sourceId: string, targetId?: string): Thunk
                                 hp: maxHeal,
                             }));
                             break;
+                        case EffectName.CardDraw:
+                            drawCards(sourceId, cast.magnitude)(dispatch, getState, extraArgument);
+                            break;
                         case EffectName.Strength:
                         case EffectName.Weak:
                         case EffectName.Block:

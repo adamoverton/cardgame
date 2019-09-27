@@ -3,26 +3,31 @@ import { EffectName } from "src/models/Effect";
 import { Card, CardType } from "src/models/Card";
 
 export enum CardName {
+    // Attacks
     Bash = "Bash",
-    Strike = "Strike",
-    Defend = "Defend",
-    Inflame = "Inflame",
-    Uppercut = "Uppercut",
-    BlockTest = "BlockTest",
-    DeadlyPoison = "Deadly Poison",
-    BouncingFlask = "Bouncing Flask",
-    Recouperate = "Recouperate",
     Bite = "Bite",
+    Strike = "Strike",
+    Uppercut = "Uppercut",
+    // Skills
+    BlockTest = "BlockTest",
+    BouncingFlask = "Bouncing Flask",
+    DeadlyPoison = "Deadly Poison",
+    Defend = "Defend",
+    Recouperate = "Recouperate",
+    ShrugItOff = "Shrug It Off",
+    // Powers
+    Inflame = "Inflame",
     // Enemy cards
+    Bellow = "Bellow",
     Chomp = "Chomp",
     Thrash = "Thrash",
-    Bellow = "Bellow",
 }
 
 /**
  * A list of card definitions
  */
 export const CardDefinitions = new Map<CardName, Card>([
+    // Player Attacks
     [CardName.Bash, {
         id: 0,
         title: "Bash",
@@ -40,6 +45,23 @@ export const CardDefinitions = new Map<CardName, Card>([
         energyCost: 2,
         targeted: true,
     }],
+    [CardName.Bite, {
+        id: 0,
+        title: "Bite",
+        type: CardType.Attack,
+        description: "Deal 7 damage, Heal 2 HP",
+        castList: [{
+            effect: EffectName.Attack,
+            target: TargetType.Targeted,
+            magnitude: 7,
+        }, {
+            effect: EffectName.Heal,
+            target: TargetType.Self,
+            magnitude: 2,
+        },],
+        energyCost: 1,
+        targeted: true,
+    }],
     [CardName.Strike, {
         id: 0,
         title: "Strike",
@@ -52,45 +74,6 @@ export const CardDefinitions = new Map<CardName, Card>([
         }],
         energyCost: 1,
         targeted: true,
-    }],
-    [CardName.Defend, {
-        id: 0,
-        title: "Defend",
-        type: CardType.Skill,
-        description: "I block me",
-        castList: [{
-            effect: EffectName.Block,
-            target: TargetType.Self,
-            magnitude: 5,
-        }],
-        energyCost: 1,
-        targeted: false,
-    }],
-    [CardName.BlockTest, {
-        id: 0,
-        title: "Block Test",
-        type: CardType.Skill,
-        description: "I block for you?",
-        castList: [{
-            effect: EffectName.Block,
-            target: TargetType.Targeted,
-            magnitude: 8,
-        }],
-        energyCost: 1,
-        targeted: true,
-    }],
-    [CardName.Inflame, {
-        id: 0,
-        title: "Inflame",
-        type: CardType.Skill,
-        description: "Gain strength",
-        castList: [{
-            effect: EffectName.Strength,
-            target: TargetType.Self,
-            magnitude: 2,
-        }],
-        energyCost: 1,
-        targeted: false,
     }],
     [CardName.Uppercut, {
         id: 0,
@@ -105,15 +88,16 @@ export const CardDefinitions = new Map<CardName, Card>([
         energyCost: 1,
         targeted: true,
     }],
-    [CardName.DeadlyPoison, {
+    // Player Skills
+    [CardName.BlockTest, {
         id: 0,
-        title: "Deadly Poison",
+        title: "Block Test",
         type: CardType.Skill,
-        description: "Apply 5 Poison",
+        description: "I block for you?",
         castList: [{
-            effect: EffectName.Poison,
+            effect: EffectName.Block,
             target: TargetType.Targeted,
-            magnitude: 5,
+            magnitude: 8,
         }],
         energyCost: 1,
         targeted: true,
@@ -132,6 +116,32 @@ export const CardDefinitions = new Map<CardName, Card>([
         energyCost: 2,
         targeted: false,
     }],
+    [CardName.Defend, {
+        id: 0,
+        title: "Defend",
+        type: CardType.Skill,
+        description: "I block me",
+        castList: [{
+            effect: EffectName.Block,
+            target: TargetType.Self,
+            magnitude: 5,
+        }],
+        energyCost: 1,
+        targeted: false,
+    }],
+    [CardName.DeadlyPoison, {
+        id: 0,
+        title: "Deadly Poison",
+        type: CardType.Skill,
+        description: "Apply 5 Poison",
+        castList: [{
+            effect: EffectName.Poison,
+            target: TargetType.Targeted,
+            magnitude: 5,
+        }],
+        energyCost: 1,
+        targeted: true,
+    }],
     [CardName.Recouperate, {
         id: 0,
         title: "Recouperate",
@@ -145,20 +155,52 @@ export const CardDefinitions = new Map<CardName, Card>([
         energyCost: 1,
         targeted: false,
     }],
-    [CardName.Bite, {
+    [CardName.ShrugItOff, {
         id: 0,
-        title: "Bite",
-        type: CardType.Attack,
-        description: "Deal 7 damage, Heal 2 HP",
+        title: "Shrug It Off",
+        type: CardType.Skill,
+        description: "Gain 8 Block, Draw 1 Card",
         castList: [{
-            effect: EffectName.Attack,
-            target: TargetType.Targeted,
-            magnitude: 7,
+            effect: EffectName.Block,
+            target: TargetType.Self,
+            magnitude: 8,
         }, {
-            effect: EffectName.Heal,
+            effect: EffectName.CardDraw,
+            target: TargetType.Self,
+            magnitude: 1,
+        }],
+        energyCost: 1,
+        targeted: false,
+    }],
+    // Player Powers
+    [CardName.Inflame, {
+        id: 0,
+        title: "Inflame",
+        type: CardType.Skill,
+        description: "Gain strength",
+        castList: [{
+            effect: EffectName.Strength,
             target: TargetType.Self,
             magnitude: 2,
-        },],
+        }],
+        energyCost: 1,
+        targeted: false,
+    }],
+    // Enemy Cards
+    [CardName.Bellow, {
+        id: 0,
+        title: "Bellow",
+        type: CardType.Skill,
+        description: "Bellow",
+        castList: [{
+            effect: EffectName.Strength,
+            target: TargetType.Self,
+            magnitude: 3,
+        }, {
+            effect: EffectName.Block,
+            target: TargetType.Self,
+            magnitude: 6,
+        }],
         energyCost: 1,
         targeted: true,
     }],
@@ -188,23 +230,6 @@ export const CardDefinitions = new Map<CardName, Card>([
             effect: EffectName.Block,
             target: TargetType.Self,
             magnitude: 5,
-        }],
-        energyCost: 1,
-        targeted: true,
-    }],
-    [CardName.Bellow, {
-        id: 0,
-        title: "Bellow",
-        type: CardType.Skill,
-        description: "Bellow",
-        castList: [{
-            effect: EffectName.Strength,
-            target: TargetType.Self,
-            magnitude: 3,
-        }, {
-            effect: EffectName.Block,
-            target: TargetType.Self,
-            magnitude: 6,
         }],
         energyCost: 1,
         targeted: true,

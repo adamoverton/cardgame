@@ -31,7 +31,7 @@ export const defaultHeroDeckStore: DeckStore = {
             {...CardDefinitions.get(CardName.Strike)!, id: 4},
             {...CardDefinitions.get(CardName.Strike)!, id: 5},
             {...CardDefinitions.get(CardName.Bite)!, id: 6},
-            {...CardDefinitions.get(CardName.Defend)!, id: 7},
+            {...CardDefinitions.get(CardName.ShrugItOff)!, id: 7},
             {...CardDefinitions.get(CardName.Defend)!, id: 8},
             {...CardDefinitions.get(CardName.Defend)!, id: 9},
             {...CardDefinitions.get(CardName.DeadlyPoison)!, id: 10},

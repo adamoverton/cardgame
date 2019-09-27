@@ -80,6 +80,10 @@ export const EffectDefinitions = new Map<EffectName, EffectImpl> ([
         title: 'Heal',
         description: 'Heal damage',
     })],
+    [EffectName.CardDraw, new EffectImpl({
+        title: 'Card Draw',
+        description: 'Draw cards',
+    })],
     [EffectName.BerserkEnergy, new EffectImpl({
         title: 'Berserk Energy',
         description: 'Energy at start of turn',

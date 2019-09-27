@@ -28,6 +28,7 @@ export enum EffectName {
     Poison = "Poison", // Deal damage equal to the amount of Poison, subtract 1 from Poison stacks
     Weak = "Weak", // Reduces the amount of damage given by a percentage
     Regeneration = "Regeneration", // Restore health equal to the amount of Regeneration, subtract 1 from Regeneration stacks
+    CardDraw = 'Card Draw', // Draw cards
 }
 
 export interface Effect {
