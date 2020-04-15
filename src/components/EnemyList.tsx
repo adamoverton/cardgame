@@ -19,6 +19,9 @@ export class EnemyList extends PureComponent<EnemyListProps> {
     };
     
     private renderEnemy = (enemy: Entity): ReactNode => {
-        return <EntityComponent key={enemy.id} entity={enemy} showHp={true}/>;
+        return ( 
+            <div className="entityCard">
+                <EntityComponent key={enemy.id} entity={enemy} showHp={true}/>
+            </div>);
     };
 }

@@ -13,6 +13,7 @@ import * as React from "react";
 import { kHeroId } from 'src/models/Entity';
 import { Dispatch } from "redoodle";
 import { ClearTargetInfo } from "src/redux/TargetingActions";
+import { UntargetedDropTarget } from 'src/components/UntargetedDropTarget';
 
 export interface GameViewStateProps {
     hp: number;
@@ -57,6 +58,7 @@ export class BaseGameView extends PureComponent<BaseGameViewProps> {
                 <Energy energy={energy} maxEnergy={maxEnergy}/>
                 <div className="arena">
                     <GameStage />
+                    <UntargetedDropTarget />
                     <div className="foreground">
                         <Hand
                             cardList={hand}

@@ -179,6 +179,8 @@ export function createEntityReducer(): Reducer<EntityStore> {
             energy: 1,
             maxEnergy: 1,
             deck: defaultEnemyDeckStore,
+            x: 7,
+            y: 7,
         };
 
         return newState;

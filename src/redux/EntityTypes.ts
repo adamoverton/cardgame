@@ -17,6 +17,8 @@ export const defaultEntityStore: EntityStore = {
             effectList: [
             ],
             deck: defaultHeroDeckStore,
+            x: 0,
+            y: 0,
         },
         "Jaw Worm": {
             id: "Jaw Worm",
@@ -27,6 +29,8 @@ export const defaultEntityStore: EntityStore = {
             effectList: [
             ],
             deck: defaultEnemyDeckStore,
+            x: 7,
+            y: 3,
         },
         "Jaw Worm 2": {
             id: "Jaw Worm 2",
@@ -37,6 +41,8 @@ export const defaultEntityStore: EntityStore = {
             effectList: [
             ],
             deck: defaultEnemyDeckStore,
+            x: 7,
+            y: 6,
         },
     },
     enemyIdIncrementer: 4,

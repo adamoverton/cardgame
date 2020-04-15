@@ -9,6 +9,8 @@ export interface Entity {
     energy: number;
     maxEnergy: number;
     deck: DeckStore;
+    x: number;
+    y: number;
 }
 
 export const kHeroId: string = "hero";

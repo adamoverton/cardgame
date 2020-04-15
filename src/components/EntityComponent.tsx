@@ -12,6 +12,7 @@ export interface EntityComponentOwnProps {
     entity: Entity;
     showHp: boolean;
     additionalClass?: string;
+    smallDisplay?: boolean;
 }
 
 export interface EntityComponentDispatchProps {
@@ -36,9 +37,21 @@ export class BaseEntityComponent extends Component<BaseEntityComponentProps> {
     render = (): ReactNode => {
         const className = this.props.additionalClass ? "entity " + this.props.additionalClass : "entity";
         let castList: Cast[] = [];
-        if (this.props.entity.id !== kHeroId) {
+        const { smallDisplay } =  this.props;
+
+        // Show enemy intents
+        if (this.props.entity.id !== kHeroId && !smallDisplay) {
             castList = this.props.entity.deck.battleCards.hand[0].castList;
         } 
+        let name = this.props.entity.id;
+        const shortName = name.split(/\s/).reduce((response, word)=> response += word.slice(0, 1), '')
+        let hpText = "HP: ";
+
+        if (smallDisplay) {
+            name =  shortName;
+            hpText = "";
+        }
+
         return <div
             className={className}
             key={this.props.entity.id}
@@ -50,8 +63,8 @@ export class BaseEntityComponent extends Component<BaseEntityComponentProps> {
                         return (<div key={cast.effect}>{cast.magnitude} {cast.effect}</div>)
                     })}
                 </div>   
-            <div className="highlight">{this.props.entity.id}</div>
-            {this.props.showHp ? <div className="highlight">HP: {this.props.entity.hp} / {this.props.entity.maxHp}</div> : undefined}
+            <div className="highlight">{name}</div>
+            {this.props.showHp ? <div className="highlight">{hpText}{this.props.entity.hp} / {this.props.entity.maxHp}</div> : undefined}
             <EffectList effectList={this.props.entity.effectList}/>
         </div>
     };

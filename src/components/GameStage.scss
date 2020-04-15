@@ -1,39 +1,31 @@
 .gameStage {
     position: relative;
     display: flex;
-    flex-grow: 3;
-
-    .untargetedDropTarget {
-        position: absolute;
-        left: 20%;
-        right: 20%;
-        top: 30px;
-        bottom: 30px;
-
-        &.showDropTarget {
-            border: 2px dashed black;
-        }
-    }
+    justify-content: space-between;
 
     .heroList {
         width: 30%;
     }
 
     .enemyList {
-        position: absolute;
         right: 0;
     }
 
-    .entity {
+    .entityCard {
         width: 250px;
         height: 100px;
         padding: 20px 15px;
         border: 1px solid rgb(36, 27, 10);
-        background-color: pink;
         box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.3);
-        font-size: 12px;
         margin: 10px;
+    }
+
+    .entity {
+        background-color: pink;
+        font-size: 10px;
         cursor: pointer;
+        padding: 10px;
+        height: 100%;
 
         // Animations
         position: relative;
@@ -46,13 +38,12 @@
 
         .highlight {
             margin: 0 auto;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
         }
     }
 
     .hero {
         background-color: lightgreen;
-        margin: 10px;
     }
 }

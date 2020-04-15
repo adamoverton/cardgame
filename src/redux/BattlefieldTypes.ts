@@ -1,3 +1,5 @@
+import { defaultEntityStore } from 'src/redux/EntityTypes';
+
 export enum Terrain {
     Empty = 1,
     Mud,
@@ -51,6 +53,13 @@ export const createDefaultBattlefieldStore = (): BattlefieldStore => {
             entityId: "",
         }
     }
+
+    // It's not ideal for BattlefieldTypes to know about entities, but we are choosing to double bookkeep, so tough tooties
+    // We could let the store state and reducers fully initialize, and then add these cross referenced bits using the reducers
+    // Let's do that once we have some kind of StartLevel function. It'll read it all from JSON and be genius 
+    Object.values(defaultEntityStore.entityList).forEach(entity => {
+        battlefieldStore.grid[entity.x][entity.y].entityId = entity.id;
+    });
 
     return battlefieldStore;
 }

@@ -1,13 +1,16 @@
 import * as React from 'react';
-import {PureComponent, ReactNode} from 'react';
+import {PureComponent, ReactNode, Fragment} from 'react';
 import 'src/components/Battlefield.scss';
 import { BattlefieldTile } from 'src/redux/BattlefieldTypes';
 import { Tile } from 'src/components/Tile';
 import { connect } from 'react-redux';
 import { StoreState } from 'src/redux/StoreState';
+import { Entity } from 'src/models/Entity';
+import { EntityComponent } from 'src/components/EntityComponent';
 
 export interface BattlefieldProps {
     grid: BattlefieldTile[][];
+    entityList: { [key: string]: Entity};
 }
 
 const cellStateToColor: { [key: number]: string } = {
@@ -21,6 +24,14 @@ const cellStateToColor: { [key: number]: string } = {
 
 export class BaseBattlefield extends PureComponent<BattlefieldProps> {
     render(): ReactNode {
+        const getEntityForTile = (entityId: string) => {
+            if (this.props.entityList[entityId]) {
+                return <EntityComponent entity={this.props.entityList[entityId]} smallDisplay={true} showHp={true} />
+            } else {
+                return <Fragment />
+            }
+        }
+
         const {
             grid,
         } = this.props;
@@ -45,7 +56,9 @@ export class BaseBattlefield extends PureComponent<BattlefieldProps> {
                                                         onClick={(col: number, row: number) => {
                                                             console.log("Clicked on: " + colIndex + ", " + rowIndex);
                                                         }}
-                                                        />
+                                                        >
+                                                        { getEntityForTile(grid[rowIndex][colIndex].entityId) }
+                                                    </Tile>
                                                 </td>
                                             </React.Fragment>
                                         );
@@ -64,6 +77,7 @@ export class BaseBattlefield extends PureComponent<BattlefieldProps> {
 export const mapStateToProps = (store: StoreState) => {
     return {
         grid: store.battlefield.grid,
+        entityList: store.entity.entityList,
     };
 };
 

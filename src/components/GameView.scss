@@ -21,6 +21,17 @@
         flex-direction: column;
         background: url("../images/battle-arena-background.jpg") no-repeat center $arenaBackgroundColor;
         background-size: cover;
+
+        .untargetedDropTarget {
+            position: relative;
+            flex-grow: 1;
+            left: 20%;
+            width: 60%;
+    
+            &.showDropTarget {
+                border: 2px dashed black;
+            }
+        }
     }
 }
 

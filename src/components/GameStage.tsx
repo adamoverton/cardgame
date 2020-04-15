@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { EntityComponent } from 'src/components/EntityComponent';
 import { Entity, kHeroId } from "src/models/Entity";
 import 'src/components/GameStage.scss';
-import { UntargetedDropTarget } from "src/components/UntargetedDropTarget";
 import { Battlefield } from "src/components/Battlefield";
 
 export interface GameStageProps {
@@ -20,9 +19,10 @@ class BaseGameStage extends PureComponent<GameStageProps> {
 
         return (
             <div className="gameStage">
+                <div className="entityCard">
+                    <EntityComponent showHp={false} entity={hero} additionalClass="hero"/>
+                </div>
                 <Battlefield />
-                <UntargetedDropTarget />
-                <EntityComponent showHp={false} entity={hero} additionalClass="hero"/>
                 <EnemyList enemies={enemies}/>
             </div>
         );
