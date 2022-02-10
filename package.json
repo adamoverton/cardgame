@@ -28,7 +28,7 @@
     "@types/redux-actions": "^2.3.1",
     "@types/webpack": "^4.32.2",
     "classnames": "^2.2.6",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "redux-devtools-extension": "^2.13.8",
     "typescript": "^3.1.6"
   },
